@@ -279,7 +279,8 @@ def beta_to_uni(text):
 
     last_lookup_fail = False
     while idx < len(text):
-        if last_lookup_fail and transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
+        if last_lookup_fail and transform[-2] == _MEDIAL_LC_SIGMA \
+            and not transform[-1].isalnum():
             transform[-2] = _FINAL_LC_SIGMA
 
         value, left = t.find_prefix(text[idx:])
@@ -295,9 +296,17 @@ def beta_to_uni(text):
             transform.append(value)
             idx += len(text) - idx - len(left)
 
+    # Check one last time in case there is some whitespace or punctuation at the
+    # end and check if the last character is a sigma.
+    if last_lookup_fail and transform[-2] == _MEDIAL_LC_SIGMA \
+        and not transform[-1].isalnum():
+        transform[-2] = _FINAL_LC_SIGMA
+    elif transform[-1] == _MEDIAL_LC_SIGMA:
+        transform[-1] = _FINAL_LC_SIGMA
+
     converted = ''.join(transform)
     return converted
 
-beta = 'th=s tou= filoso/fou pragmatei/as ei)=nai nomi/zomen, ei)/per a)/llhn tina/, kai\ th\\n gewgrafikh/n, '
+beta = 'th=s ss'
 uni = beta_to_uni(beta)
 print(uni)
