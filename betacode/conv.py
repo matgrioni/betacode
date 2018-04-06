@@ -1,4 +1,4 @@
-from betaconv.trie import Trie
+from betacode._trie import Trie
 
 _FINAL_LC_SIGMA = '\u03c2'
 _MEDIAL_LC_SIGMA = '\u03c3'
