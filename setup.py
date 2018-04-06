@@ -1,8 +1,8 @@
 from distutils.core import setup
 
 setup(
-    name = 'betaconv',
-    packages = ['betaconv'],
+    name = 'betacode',
+    packages = ['betacode'],
     version = '0.0.1',
     description = 'Betacode to Unicode converter.',
     author = 'Matias Grioni',

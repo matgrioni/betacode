@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-import trie
+from betaconv.trie import Trie
 
 _FINAL_LC_SIGMA = '\u03c2'
 _MEDIAL_LC_SIGMA = '\u03c3'
@@ -119,6 +117,11 @@ _BETACODE_MAP = {
     '*)a':    '\u1f08',
     '*a(':    '\u1f09',
     '*(a':    '\u1f09',
+
+    'a)':     '\u1f00',
+    ')a':     '\u1f00',
+    'a(':     '\u1f01',
+    '(a':     '\u1f01',
 
     '*(\\a':  '\u1f0b',
     '*a)/':   '\u1f0c',
@@ -277,7 +280,7 @@ def _create_conversion_trie():
     Returns:
     The trie.
     """
-    t = trie.Trie()
+    t = Trie()
 
     for beta, uni in _BETACODE_MAP.items():
         t.add(beta, uni)
@@ -302,8 +305,8 @@ def beta_to_uni(text):
 
     last_lookup_fail = False
     while idx < len(text):
-        if last_lookup_fail and transform[-2] == _MEDIAL_LC_SIGMA \
-            and not transform[-1].isalnum():
+        if last_lookup_fail and len(transform) > 1 and \
+            transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
             transform[-2] = _FINAL_LC_SIGMA
 
         value, left = t.find_prefix(text[idx:])
@@ -321,8 +324,8 @@ def beta_to_uni(text):
 
     # Check one last time in case there is some whitespace or punctuation at the
     # end and check if the last character is a sigma.
-    if last_lookup_fail and transform[-2] == _MEDIAL_LC_SIGMA \
-        and not transform[-1].isalnum():
+    if last_lookup_fail and len(transform) > 1 and \
+        transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
         transform[-2] = _FINAL_LC_SIGMA
     elif transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
