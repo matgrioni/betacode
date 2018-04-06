@@ -1,0 +1,15 @@
+## betaconv
+
+Convert betacode to unicode and vice-versa easily.
+
+### Install
+
+Installation is easy. Use `pip` or your preferred method to download from PyPI.
+
+```
+pip install betaconv
+```
+
+### Usage
+
+TODO

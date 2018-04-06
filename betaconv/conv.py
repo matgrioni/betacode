@@ -50,8 +50,6 @@ _BETACODE_MAP = {
     'r':      '\u03c1',
 
     's':      '\u03c3',
-    's1':     '\u03c3',
-    's2':     '\u03c2',
 
     't':      '\u03c4',
     'u':      '\u03c5',
@@ -252,8 +250,33 @@ _BETACODE_MAP = {
     '*(r':    '\u1fec',
 }
 
+def _create_unicode_map():
+    """
+    Create the inverse map from unicode to betacode.
 
-def create_conversion_tree():
+    Returns:
+    The hash map to convert unicode characters to the beta code representation.
+    """
+    unicode_map = {}
+
+    for beta, uni in _BETACODE_MAP.items():
+        unicode_map[uni] = beta
+
+    # Add the final sigmas.
+    unicode_map[_FINAL_LC_SIGMA] = 's'
+
+    return unicode_map
+
+_UNICODE_MAP = _create_unicode_map()
+
+
+def _create_conversion_trie():
+    """
+    Create the trie for betacode conversion.
+
+    Returns:
+    The trie.
+    """
     t = trie.Trie()
 
     for beta, uni in _BETACODE_MAP.items():
@@ -272,7 +295,7 @@ def beta_to_uni(text):
     Returns:
     The converted text.
     """
-    t = create_conversion_tree()
+    t = _create_conversion_trie()
 
     transform = []
     idx = 0
@@ -307,6 +330,29 @@ def beta_to_uni(text):
     converted = ''.join(transform)
     return converted
 
-beta = 'th=s ss'
-uni = beta_to_uni(beta)
-print(uni)
+def uni_to_beta(text):
+    """
+    Convert unicode text to a betacode equivalent.
+
+    Args:
+    text: The text to convert to betacode. This text does not have to all be
+          Greek polytonic text, and only Greek characters will be converted.
+
+    Returns:
+    The betacode equivalent of the inputted text.
+    """
+    transform = []
+
+    last_lookup_failed = False
+    for ch in text:
+        try:
+            last_lookup_failed = True
+            conv = _UNICODE_MAP[ch]
+        except KeyError:
+            last_lookup_failed = True
+            conv = ch
+
+        transform.append(conv)
+
+    converted = ''.join(transform)
+    return converted
