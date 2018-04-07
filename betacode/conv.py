@@ -1,9 +1,36 @@
+import itertools
+
 from betacode._trie import Trie
 
 _FINAL_LC_SIGMA = '\u03c2'
 _MEDIAL_LC_SIGMA = '\u03c3'
 
 _BETACODE_MAP = {
+    # No marks
+    'a':      '\u03b1',
+    'b':      '\u03b2',
+    'g':      '\u03b3',
+    'd':      '\u03b4',
+    'e':      '\u03b5',
+    'z':      '\u03b6',
+    'h':      '\u03b7',
+    'q':      '\u03b8',
+    'i':      '\u03b9',
+    'k':      '\u03ba',
+    'l':      '\u03bb',
+    'm':      '\u03bc',
+    'n':      '\u03bd',
+    'c':      '\u03be',
+    'o':      '\u03bf',
+    'p':      '\u03c0',
+    'r':      '\u03c1',
+    's':      '\u03c3',
+    't':      '\u03c4',
+    'u':      '\u03c5',
+    'f':      '\u03c6',
+    'x':      '\u03c7',
+    'y':      '\u03c8',
+    'w':      '\u03c9',
     '*a':     '\u0391',
     '*b':     '\u0392',
     '*g':     '\u0393',
@@ -29,176 +56,7 @@ _BETACODE_MAP = {
     '*y':     '\u03a8',
     '*w':     '\u03a9',
 
-    'a':      '\u03b1',
-    'b':      '\u03b2',
-    'g':      '\u03b3',
-    'd':      '\u03b4',
-    'e':      '\u03b5',
-    'z':      '\u03b6',
-    'h':      '\u03b7',
-    'q':      '\u03b8',
-    'i':      '\u03b9',
-    'k':      '\u03ba',
-    'l':      '\u03bb',
-    'm':      '\u03bc',
-    'n':      '\u03bd',
-    'c':      '\u03be',
-    'o':      '\u03bf',
-    'p':      '\u03c0',
-    'r':      '\u03c1',
-
-    's':      '\u03c3',
-
-    't':      '\u03c4',
-    'u':      '\u03c5',
-    'f':      '\u03c6',
-    'x':      '\u03c7',
-    'y':      '\u03c8',
-    'w':      '\u03c9',
-
-    'i+':     '\u03ca',
-    'u+':     '\u03cb',
-
-    'a)':     '\u1f00',
-    'a(':     '\u1f01',
-    'a)\\':   '\u1f02',
-    'a(\\':   '\u1f03',
-    'a)/':    '\u1f04',
-    'a(/':    '\u1f05',
-    'e)':     '\u1f10',
-    'e(':     '\u1f11',
-    'e)\\':   '\u1f12',
-    'e(\\':   '\u1f13',
-    'e)/':    '\u1f14',
-    'e(/':    '\u1f15',
-    'h)':     '\u1f20',
-    'h(':     '\u1f21',
-    'h)\\':   '\u1f22',
-    'h(\\':   '\u1f23',
-    'h)/':    '\u1f24',
-    'h(/':    '\u1f25',
-    'i)':     '\u1f30',
-    'i(':     '\u1f31',
-    'i)\\':   '\u1f32',
-    'i(\\':   '\u1f33',
-    'i)/':    '\u1f34',
-    'i(/':    '\u1f35',
-    'o)':     '\u1f40',
-    'o(':     '\u1f41',
-    'o)\\':   '\u1f42',
-    'o(\\':   '\u1f43',
-    'o)/':    '\u1f44',
-    'o(/':    '\u1f45',
-    'u)':     '\u1f50',
-    'u(':     '\u1f51',
-    'u)\\':   '\u1f52',
-    'u(\\':   '\u1f53',
-    'u)/':    '\u1f54',
-    'u(/':    '\u1f55',
-    'w)':     '\u1f60',
-    'w(':     '\u1f61',
-    'w)\\':   '\u1f62',
-    'w(\\':   '\u1f63',
-    'w)/':    '\u1f64',
-    'w(/':    '\u1f65',
-
-    'a)=':    '\u1f06',
-    'a(=':    '\u1f07',
-    'h)=':    '\u1f26',
-    'h(=':    '\u1f27',
-    'i)=':    '\u1f36',
-    'i(=':    '\u1f37',
-    'u)=':    '\u1f56',
-    'u(=':    '\u1f57',
-    'w)=':    '\u1f66',
-    'w(=':    '\u1f67',
-
-    '*a)':    '\u1f08',
-    '*)a':    '\u1f08',
-    '*a(':    '\u1f09',
-    '*(a':    '\u1f09',
-
-    'a)':     '\u1f00',
-    ')a':     '\u1f00',
-    'a(':     '\u1f01',
-    '(a':     '\u1f01',
-
-    '*(\\a':  '\u1f0b',
-    '*a)/':   '\u1f0c',
-    '*)/a':   '\u1f0c',
-    '*a(/':   '\u1f0f',
-    '*(/a':   '\u1f0f',
-    '*e)':    '\u1f18',
-    '*)e':    '\u1f18',
-    '*e(':    '\u1f19',
-    '*(e':    '\u1f19',
-
-    '*(\e':   '\u1f1b',
-    '*e)/':   '\u1f1c',
-    '*)/e':   '\u1f1c',
-    '*e(/':   '\u1f1d',
-    '*(/e':   '\u1f1d',
-
-    '*h)':    '\u1f28',
-    '*)h':    '\u1f28',
-    '*h(':    '\u1f29',
-    '*(h':    '\u1f29',
-    '*h)\\':  '\u1f2a',
-    ')\\*h':  '\u1f2a',
-    '*)\\h':  '\u1f2a',
-
-    '*h)/':   '\u1f2c',
-    '*)/h':   '\u1f2c',
-
-    '*)=h':   '\u1f2e',
-    '(/*h':   '\u1f2f',
-    '*(/h':   '\u1f2f',
-    '*i)':    '\u1f38',
-    '*)i':    '\u1f38',
-    '*i(':    '\u1f39',
-    '*(i':    '\u1f39',
-
-    '*i)/':   '\u1f3c',
-    '*)/i':   '\u1f3c',
-
-    '*i(/':   '\u1f3f',
-    '*(/i':   '\u1f3f',
-
-    '*o)':    '\u1f48',
-    '*)o':    '\u1f48',
-    '*o(':    '\u1f49',
-    '*(o':    '\u1f49',
-
-    '*(\o':   '\u1f4b',
-    '*o)/':   '\u1f4c',
-    '*)/o':   '\u1f4c',
-    '*o(/':   '\u1f4f',
-    '*(/o':   '\u1f4f',
-
-    '*u(':    '\u1f59',
-    '*(u':    '\u1f59',
-
-    '*(/u':   '\u1f5d',
-
-    '*(=u':   '\u1f5f',
-    
-    '*w)':    '\u1f68',
-    '*w(':    '\u1f69',
-    '*(w':    '\u1f69',
-
-    '*w)/':   '\u1f6c',
-    '*)/w':   '\u1f6c',
-    '*w(/':   '\u1f6f',
-    '*(/w':   '\u1f6f',
-
-    '*a)=':   '\u1f0e',
-    '*)=a':   '\u1f0e',
-    '*a(=':   '\u1f0f',
-    '*w)=':   '\u1f6e',
-    '*)=w':   '\u1f6e',
-    '*w(=':   '\u1f6f',
-    '*(=w':   '\u1f6f',
-
+    # Acute and grave accent only
     'a\\':    '\u1f70',
     'a/':     '\u1f71',
     'e\\':    '\u1f72',
@@ -213,45 +71,250 @@ _BETACODE_MAP = {
     'u/':     '\u1f7b',
     'w\\':    '\u1f7c',
     'w/':     '\u1f7d',
+    '*a\\':   '\u1fba',
+    '*a/':    '\u1fbb',
+    '*e\\':   '\u1fce',
+    '*e/':    '\u1fc9',
+    '*h\\':   '\u1fca',
+    '*h/':    '\u1fcb',
+    '*i\\':   '\u1fda',
+    '*i/':    '\u1fdb',
+    '*o\\':   '\u1ff8',
+    '*o/':    '\u1ff9',
+    '*u\\':   '\u1fea',
+    '*u/':    '\u1feb',
+    '*w\\':   '\u1ffa',
+    '*w/':    '\u1ffb',
 
-    'a)/|':   '\u1f84',
-    'a(/|':   '\u1f85',
-    'h)|':    '\u1f90',
-    'h(|':    '\u1f91',
-    'h)/|':   '\u1f94',
-    'h)=|':   '\u1f96',
-    'h(=|':   '\u1f97',
-    'w)|':    '\u1fa0',
-    'w(=|':   '\u1fa7',
+    # Comma / smooth breathing above only
+    'a)':      '\u1f00',
+    'e)':      '\u1f10',
+    'h)':      '\u1f20',
+    'i)':      '\u1f30',
+    'o)':      '\u1f40',
+    'u)':      '\u1f50',
+    'w)':      '\u1f60',
+    'r)':      '\u1fe4',
+    '*a)':     '\u1f08',
+    '*e)':     '\u1f18',
+    '*h)':     '\u1f28',
+    '*i)':     '\u1f38',
+    '*o)':     '\u1f48',
+    '*u)':     '\u1f58',
+    '*w)':     '\u1f68',
 
+    # Comma / smooth breathing and acute accent
+    'a)/':     '\u1f04',
+    'e)/':     '\u1f14',
+    'h)/':     '\u1f24',
+    'i)/':     '\u1f34',
+    'o)/':     '\u1f44',
+    'u)/':     '\u1f54',
+    'w)/':     '\u1f64',
+    '*a)/':    '\u1f0c',
+    '*e)/':    '\u1f1c',
+    '*h)/':    '\u1f2c',
+    '*i)/':    '\u1f3c',
+    '*o)/':    '\u1f4c',
+    '*u)/':    '\u1f5c',
+    '*w)/':    '\u1f6c',
+
+    # Comma / smooth breathing and grave accent
+    'a)\\':    '\u1f02',
+    'e)\\':    '\u1f12',
+    'h)\\':    '\u1f22',
+    'i)\\':    '\u1f32',
+    'o)\\':    '\u1f42',
+    'u)\\':    '\u1f52',
+    'w)\\':    '\u1f62',
+    '*a)\\':   '\u1f0a',
+    '*e)\\':   '\u1f1a',
+    '*h)\\':   '\u1f2a',
+    '*i)\\':   '\u1f3a',
+    '*o)\\':   '\u1f4a',
+    '*u)\\':   '\u1f5a',
+    '*w)\\':   '\u1f6a',
+
+    # Reversed comma / rough breathing above only
+    'a(':      '\u1f01',
+    'e(':      '\u1f11',
+    'h(':      '\u1f21',
+    'i(':      '\u1f31',
+    'o(':      '\u1f41',
+    'u(':      '\u1f51',
+    'w(':      '\u1f61',
+    'r(':      '\u1fe5',
+    '*a(':     '\u1f09',
+    '*e(':     '\u1f19',
+    '*h(':     '\u1f29',
+    '*i(':     '\u1f39',
+    '*o(':     '\u1f49',
+    '*u(':     '\u1f59',
+    '*w(':     '\u1f69',
+    '*r(':     '\u1fec',
+
+    # Reversed comma / rough breathing and acute accent
+    'a(/':     '\u1f05',
+    'e(/':     '\u1f15',
+    'h(/':     '\u1f25',
+    'i(/':     '\u1f35',
+    'o(/':     '\u1f45',
+    'u(/':     '\u1f55',
+    'w(/':     '\u1f65',
+    '*a(/':    '\u1f0d',
+    '*e(/':    '\u1f1d',
+    '*h(/':    '\u1f2d',
+    '*i(/':    '\u1f3d',
+    '*o(/':    '\u1f4d',
+    '*u(/':    '\u1f5d',
+    '*w(/':    '\u1f6d',
+
+    # Reversed comma / rough breathing and grave accent
+    'a(\\':    '\u1f03',
+    'e(\\':    '\u1f13',
+    'h(\\':    '\u1f23',
+    'i(\\':    '\u1f33',
+    'o(\\':    '\u1f43',
+    'u(\\':    '\u1f53',
+    'w(\\':    '\u1f63',
+    '*a(\\':   '\u1f0b',
+    '*e(\\':   '\u1f1b',
+    '*h(\\':   '\u1f2b',
+    '*i(\\':   '\u1f3b',
+    '*o(\\':   '\u1f4b',
+    '*u(\\':   '\u1f5b',
+    '*w(\\':   '\u1f6b',
+
+    # Perispomeni only, lowercase
     'a=':     '\u1fb6',
     'h=':     '\u1fc6',
     'i=':     '\u1fd6',
     'u=':     '\u1fe6',
     'w=':     '\u1ff6',
 
-    'i\\+':   '\u1fd2',
-    'i/+':    '\u1fd3',
-    'i+/':    '\u1fd3',
-    'u\\+':   '\u1fe2',
-    'u/+':    '\u1fe3',
+    # Comma / smooth breathing and perispomeni, lowercase
+    'a)=':    '\u1f06',
+    'h)=':    '\u1f26',
+    'i)=':    '\u1f36',
+    'u)=':    '\u1f56',
+    'w)=':    '\u1f66',
 
-    'a|':     '\u1fb3',
-    'a/|':    '\u1fb4',
-    'h|':     '\u1fc3',
-    'h/|':    '\u1fc4',
-    'w|':     '\u1ff3',
-    'w|/':    '\u1ff4',
-    'w/|':    '\u1ff4',
+    # Comma / smooth breathing and perispomeni, uppercase
+    '*a)=':   '\u1f0e',
+    '*h)=':   '\u1f2e',
+    '*i)=':   '\u1f3e',
+    '*w)=':   '\u1f6e',
 
+    # Reversed comma / rough breathing and perispomeni, lowercase
+    'a(=':    '\u1f07',
+    'h(=':    '\u1f27',
+    'i(=':    '\u1f37',
+    'u(=':    '\u1f57',
+    'w(=':    '\u1f67',
+
+    # Reversed comma / rough breating and perispomeni, uppercase
+    '*a(=':   '\u1f0f',
+    '*h(=':   '\u1f2f',
+    '*i(=':   '\u1f3f',
+    '*u(=':   '\u1f5f',
+    '*w(=':   '\u1f6f',
+
+    # Perispomeni and ypogegrammeni
     'a=|':    '\u1fb7',
     'h=|':    '\u1fc7',
     'w=|':    '\u1ff7',
 
-    'r(':     '\u1fe4',
-    '*r(':    '\u1fec',
-    '*(r':    '\u1fec',
+    # Ypogegrammeni only, lowercase
+    'a|':     '\u1fb3',
+    'h|':     '\u1fc3',
+    'w|':     '\u1ff3',
+    '*a|':    '\u1fbc',
+    '*h|':    '\u1fcc',
+    '*w|':    '\u1ffc',
+
+    # Acute accent and ypogegrammeni
+    'a/|':    '\u1fb4',
+    'h/|':    '\u1fc4',
+    'w/|':    '\u1ff4',
+
+    # Smooth breathing and ypogegrammeni
+    'a)|':    '\u1f80',
+    'h)|':    '\u1f90',
+    'w)|':    '\u1fa0',
+    '*a)|':   '\u1f88',
+    '*h)|':   '\u1f98',
+    '*w)|':   '\u1fa8',
+
+    # Rough breathing and ypogegrammeni
+    'a(|':    '\u1f81',
+    'h(|':    '\u1f91',
+    'w(|':    '\u1fa1',
+    '*a(|':   '\u1f89',
+    '*h(|':   '\u1f99',
+    '*w(|':   '\u1fa9',
+
+    # Smooth breathing, acute accent, and ypogegrammeni
+    'a)\|':   '\u1f82',
+    'h)\|':   '\u1f92',
+    'w)\|':   '\u1fa2',
+    '*a)\|':  '\u1f8a',
+    '*h)\|':  '\u1f9a',
+    '*w)\|':  '\u1faa',
+
+    # Rough breathing, grave accent, and ypogegrammeni
+    'a(\|':   '\u1f83',
+    'h)\|':   '\u1f93',
+    'w)\|':   '\u1fa3',
+    '*a(\|':  '\u1f8b',
+    '*h)\|':  '\u1f9b',
+    '*w)\|':  '\u1fab',
+
+    # Acute accent, smooth breathing, and ypogegrammeni
+    'a)/|':   '\u1f84',
+    'h)/|':   '\u1f94',
+    'w)/|':   '\u1fa4',
+    '*a)/|':  '\u1f8c',
+    '*h)/|':  '\u1f9c',
+    '*w)/|':  '\u1fac',
+
+    # Rough breating, acute accent, and ypogegrammeni
+    'a(/|':   '\u1f85',
+    'h(/|':   '\u1f95',
+    'w(/|':   '\u1fa5',
+    '*a(/|':  '\u1f8d',
+    '*h(/|':  '\u1f9d',
+    '*w(/|':  '\u1fad',
+
+    # Smooth breathing, ypogegrammeni, and perispomeni
+    'a)=|':   '\u1f86',
+    'h)=|':   '\u1f96',
+    'w)=|':   '\u1fa6',
+    '*a)=|':  '\u1f8e',
+    '*h)=|':  '\u1f9e',
+    '*w)=|':  '\u1fae',
+
+    # Rough breathing, ypogegrammeni, and perispomeni
+    'a(=|':   '\u1f87',
+    'h(=|':   '\u1f97',
+    'w(=|':   '\u1fa7',
+    '*a(=|':   '\u1f8f',
+    '*h(=|':   '\u1f9f',
+    '*w(=|':   '\u1faf',
+
+    # Diaeresis combos
+    'i+':     '\u03ca',
+    '*i+':    '\u03aa',
+    'i\\+':   '\u1fd2',
+    'i/+':    '\u1fd3',
+    'i+/':    '\u1fd3',
+    'i=+':    '\u1fd7',
+    'u+':     '\u03cb',
+    '*u+':    '\u03ab',
+    'u\\+':   '\u1fe2',
+    'u/+':    '\u1fe3',
+    'u=+':    '\u1fe7',
 }
+
 
 def _create_unicode_map():
     """
@@ -278,12 +341,22 @@ def _create_conversion_trie():
     Create the trie for betacode conversion.
 
     Returns:
-    The trie.
+    The trie for conversion.
     """
     t = Trie()
 
     for beta, uni in _BETACODE_MAP.items():
-        t.add(beta, uni)
+        upper = '*' == beta[0]
+        start = 2 if upper else 1
+
+        for perm in itertools.permutations(beta[start:]):
+            joined = ''.join(perm)
+            vals = [beta[start - 1] + joined, joined + beta[start - 1]]
+            if upper:
+                vals = map(lambda el: '*' + el, vals)
+
+            for val in vals:
+                t.add(val, uni)
 
     return t
 
