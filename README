@@ -12,4 +12,19 @@ pip install betaconv
 
 ### Usage
 
-TODO
+#### Betacode to unicode
+
+```
+import betacode.conv
+
+beta = 'analabo/ntes de\ kaq\' e(/kaston'
+betacode.conv.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
+```
+
+#### Unicode to betacode
+```
+import betacode.conv
+
+uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
+betacode.conv.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
+```

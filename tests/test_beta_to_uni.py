@@ -36,13 +36,13 @@ def test_final_sigma_whitespace():
 
 def test_multi_word():
     beta = 'analabo/ntes de\ kaq\' e(/kaston'
-    uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
+    uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
 
     _test_beta_uni_equality(beta, uni)
 
 def test_punctuation():
     beta = 'e)/oiken h)\ dida/skonti; nh\\'
-    uni = 'ἔοικεν ἢ διδάσκοντι; νὴ'
+    uni = 'ἔοικεν ἢ διδάσκοντι; νὴ'
 
     _test_beta_uni_equality(beta, uni)
 

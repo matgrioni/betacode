@@ -379,7 +379,7 @@ def beta_to_uni(text):
     text: The beta code text to convert. All of this text must be betacode.
 
     Returns:
-    The converted text. This text will be unicode normalized.
+    The converted text.
     """
     t = _create_conversion_trie()
 
@@ -413,7 +413,7 @@ def beta_to_uni(text):
     elif transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
 
-    converted = unicodedata.normalize('NFC', ''.join(transform))
+    converted = ''.join(transform)
     return converted
 
 def uni_to_beta(text):
