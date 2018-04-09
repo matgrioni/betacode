@@ -1,10 +1,12 @@
 import itertools
+import unicodedata
 
 from betacode._trie import Trie
 
 _FINAL_LC_SIGMA = '\u03c2'
 _MEDIAL_LC_SIGMA = '\u03c3'
 
+# TODO: This can be simplified immensely apparently.
 _BETACODE_MAP = {
     # No marks
     'a':      '\u03b1',
@@ -313,6 +315,10 @@ _BETACODE_MAP = {
     'u\\+':   '\u1fe2',
     'u/+':    '\u1fe3',
     'u=+':    '\u1fe7',
+
+    # Other punctuation
+    # TODO: Look into punctuation more
+    '\'': '\u1fbd',
 }
 
 
@@ -403,7 +409,7 @@ def beta_to_uni(text):
     elif transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
 
-    converted = ''.join(transform)
+    converted = unicodedata.normalize('NFC', ''.join(transform))
     return converted
 
 def uni_to_beta(text):
