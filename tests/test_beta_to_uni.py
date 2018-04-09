@@ -40,13 +40,13 @@ def test_multi_word():
 
     _test_beta_uni_equality(beta, uni)
 
-def test_punctuation():
+def test_punctuation_semicolon():
     beta = 'e)/oiken h)\ dida/skonti; nh\\'
     uni = 'ἔοικεν ἢ διδάσκοντι; νὴ'
 
     _test_beta_uni_equality(beta, uni)
 
-def test_middle_dot():
+def test_punctuation_colon():
     beta = 'dh=lon: oi(/ te'
     uni = 'δῆλον: οἵ τε'
 
