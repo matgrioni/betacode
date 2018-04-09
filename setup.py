@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name = 'betacode',
     packages = ['betacode'],
-    version = '0.1',
+    version = '0.1.1',
     description = 'Betacode to Unicode converter.',
     author = 'Matias Grioni',
     author_email = 'matgrioni@gmail.com',
