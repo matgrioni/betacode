@@ -1,5 +1,15 @@
 import betacode.conv
 
+def _test_beta_uni_equality(beta, uni):
+    """
+    Test that the result of converting beta is uni.
+
+    Args:
+    beta: The beta code to convert.
+    uni: The expected unicode result from conversion.
+    """
+    assert uni == betacode.conv.beta_to_uni(beta)
+
 def test_simple_conv():
     beta = 'tou='
     uni = 'τοῦ'
@@ -41,6 +51,3 @@ def test_middle_dot():
     uni = 'δῆλον: οἵ τε'
 
     _test_beta_uni_equality(beta, uni)
-
-def _test_beta_uni_equality(beta, uni):
-    assert uni == betacode.conv.beta_to_uni(beta)
