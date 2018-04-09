@@ -332,9 +332,13 @@ def _create_unicode_map():
     unicode_map = {}
 
     for beta, uni in _BETACODE_MAP.items():
+        norm = unicodedata.normalize('NFC', uni)
+        unicode_map[norm] = beta
         unicode_map[uni] = beta
 
     # Add the final sigmas.
+    final_sigma_norm = unicodedata.normalize('NFC', _FINAL_LC_SIGMA)
+    unicode_map[final_sigma_norm] = 's'
     unicode_map[_FINAL_LC_SIGMA] = 's'
 
     return unicode_map
@@ -372,10 +376,10 @@ def beta_to_uni(text):
     Converts the given text from betacode to unicode.
 
     Args:
-    text: The beta code text to convert.
+    text: The beta code text to convert. All of this text must be betacode.
 
     Returns:
-    The converted text.
+    The converted text. This text will be unicode normalized.
     """
     t = _create_conversion_trie()
 
@@ -419,9 +423,11 @@ def uni_to_beta(text):
     Args:
     text: The text to convert to betacode. This text does not have to all be
           Greek polytonic text, and only Greek characters will be converted.
+          Note that in this case, you cannot convert to beta and then back to
+          unicode.
 
     Returns:
-    The betacode equivalent of the inputted text.
+    The betacode equivalent of the inputted text where applicable.
     """
     transform = []
 
