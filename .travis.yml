@@ -5,7 +5,10 @@ python:
     - "3.6"
 install:
     - pip install coveralls
+    - pip install coverage
+    - pip install nose
 script:
     - pytest
+    - nosetests --with-coverage
 after_success:
     - coveralls
