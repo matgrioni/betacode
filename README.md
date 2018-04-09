@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/matgrioni/betacode.svg?branch=master)](https://travis-ci.org/matgrioni/betacode)
+
 ## betaconv
 
 Convert betacode to unicode and vice-versa easily.
