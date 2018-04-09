@@ -7,7 +7,7 @@ setup(
     description = 'Betacode to Unicode converter.',
     author = 'Matias Grioni',
     author_email = 'matgrioni@gmail.com',
-    url = 'https://matgrioni.github.io',
+    url = 'https://github.com/matgrioni/betacode',
     keywords = ['encoding', 'unicode', 'betacode', 'greek'],
     classifiers = [
         'Programming Language :: Python',
