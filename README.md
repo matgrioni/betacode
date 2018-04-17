@@ -3,7 +3,7 @@
 
 ## betacode
 
-Convert betacode to unicode and vice-versa easily.
+Convert betacode to unicode and vice-versa easily. Tested on python 3.4, 3.5, and 3.6.
 
 ### Install
 
@@ -14,6 +14,8 @@ pip install betacode
 ```
 
 ### Usage
+
+Note that in all examples, strings are unicode encoded.
 
 #### Betacode to unicode
 
@@ -44,3 +46,5 @@ import betacode.conv
 uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
 betacode.conv.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
 ```
+
+The unicode text can use polytonic (oxeîa) or monotonic (tónos) accent marks and converesion will still be correct.

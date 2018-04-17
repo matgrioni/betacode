@@ -370,6 +370,8 @@ def _create_conversion_trie():
 
     return t
 
+_CONVERSION_TRIE = _create_conversion_trie()
+
 
 def beta_to_uni(text):
     """
@@ -381,7 +383,7 @@ def beta_to_uni(text):
     Returns:
     The converted text.
     """
-    t = _create_conversion_trie()
+    t = _CONVERSION_TRIE
 
     transform = []
     idx = 0
