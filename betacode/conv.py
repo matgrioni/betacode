@@ -392,31 +392,31 @@ def beta_to_uni(text):
     transform = []
     idx = 0
 
-    last_lookup_fail = False
+    possible_word_boundary = False
     while idx < len(text):
-        if last_lookup_fail and len(transform) > 1 and \
+        if possible_word_boundary and len(transform) > 1 and \
             transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
             transform[-2] = _FINAL_LC_SIGMA
 
         value, left = t.find_prefix(text[idx:])
 
         if value is None:
-            last_lookup_fail = True
+            possible_word_boundary = True
 
             transform.append(text[idx])
             idx += 1
         else:
-            last_lookup_fail = False
+            possible_word_boundary = text[idx] in _BETA_PUNCTUATION
 
             transform.append(value)
             idx += len(text) - idx - len(left)
 
     # Check one last time in case there is some whitespace or punctuation at the
     # end and check if the last character is a sigma.
-    if last_lookup_fail and len(transform) > 1 and \
+    if possible_word_boundary and len(transform) > 1 and \
         transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
         transform[-2] = _FINAL_LC_SIGMA
-    elif transform[-1] == _MEDIAL_LC_SIGMA:
+    elif len(transform) > 0 and transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
 
     converted = ''.join(transform)
