@@ -10,6 +10,12 @@ def _test_beta_uni_equality(beta, uni):
     """
     assert beta == betacode.conv.uni_to_beta(uni)
 
+def test_empty():
+    uni = ''
+    beta = ''
+
+    _test_beta_uni_equality(beta, uni)
+
 def test_simple_conv():
     uni = 'αβ'
     beta = 'ab'
