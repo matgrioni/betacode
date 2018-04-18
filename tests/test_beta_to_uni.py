@@ -10,6 +10,12 @@ def _test_beta_uni_equality(beta, uni):
     """
     assert uni == betacode.conv.beta_to_uni(beta)
 
+def test_empty():
+    beta = ''
+    uni = ''
+
+    _test_beta_uni_equality(beta, uni)
+
 def test_simple_conv():
     beta = 'tou='
     uni = 'τοῦ'
@@ -34,6 +40,12 @@ def test_final_sigma_whitespace():
 
     _test_beta_uni_equality(beta, uni)
 
+def test_final_sigma_punctuation():
+    beta = 'th=s\' tou='
+    uni = 'τῆς᾽ τοῦ'
+
+    _test_beta_uni_equality(beta, uni)
+
 def test_multi_word():
     beta = 'analabo/ntes de\ kaq\' e(/kaston'
     uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
@@ -48,6 +60,6 @@ def test_punctuation_semicolon():
 
 def test_punctuation_colon():
     beta = 'dh=lon: oi(/ te'
-    uni = 'δῆλον: οἵ τε'
+    uni = 'δῆλον· οἵ τε'
 
     _test_beta_uni_equality(beta, uni)
