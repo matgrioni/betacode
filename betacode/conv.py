@@ -9,84 +9,84 @@ _MEDIAL_LC_SIGMA = '\u03c3'
 # TODO: This can be simplified immensely apparently.
 _BETACODE_MAP = {
     # No marks
-    'a':      '\u03b1',
-    'b':      '\u03b2',
-    'g':      '\u03b3',
-    'd':      '\u03b4',
-    'e':      '\u03b5',
-    'z':      '\u03b6',
-    'h':      '\u03b7',
-    'q':      '\u03b8',
-    'i':      '\u03b9',
-    'k':      '\u03ba',
-    'l':      '\u03bb',
-    'm':      '\u03bc',
-    'n':      '\u03bd',
-    'c':      '\u03be',
-    'o':      '\u03bf',
-    'p':      '\u03c0',
-    'r':      '\u03c1',
-    's':      '\u03c3',
-    't':      '\u03c4',
-    'u':      '\u03c5',
-    'f':      '\u03c6',
-    'x':      '\u03c7',
-    'y':      '\u03c8',
-    'w':      '\u03c9',
-    '*a':     '\u0391',
-    '*b':     '\u0392',
-    '*g':     '\u0393',
-    '*d':     '\u0394',
-    '*e':     '\u0395',
-    '*z':     '\u0396',
-    '*h':     '\u0397',
-    '*q':     '\u0398',
-    '*i':     '\u0399',
-    '*k':     '\u039a',
-    '*l':     '\u039b',
-    '*m':     '\u039c',
-    '*n':     '\u039d',
-    '*c':     '\u039e',
-    '*o':     '\u039f',
-    '*p':     '\u03a0',
-    '*r':     '\u03a1',
-    '*s':     '\u03a3',
-    '*t':     '\u03a4',
-    '*u':     '\u03a5',
-    '*f':     '\u03a6',
-    '*x':     '\u03a7',
-    '*y':     '\u03a8',
-    '*w':     '\u03a9',
+    'a':       '\u03b1',
+    'b':       '\u03b2',
+    'g':       '\u03b3',
+    'd':       '\u03b4',
+    'e':       '\u03b5',
+    'z':       '\u03b6',
+    'h':       '\u03b7',
+    'q':       '\u03b8',
+    'i':       '\u03b9',
+    'k':       '\u03ba',
+    'l':       '\u03bb',
+    'm':       '\u03bc',
+    'n':       '\u03bd',
+    'c':       '\u03be',
+    'o':       '\u03bf',
+    'p':       '\u03c0',
+    'r':       '\u03c1',
+    's':       '\u03c3',
+    't':       '\u03c4',
+    'u':       '\u03c5',
+    'f':       '\u03c6',
+    'x':       '\u03c7',
+    'y':       '\u03c8',
+    'w':       '\u03c9',
+    '*a':      '\u0391',
+    '*b':      '\u0392',
+    '*g':      '\u0393',
+    '*d':      '\u0394',
+    '*e':      '\u0395',
+    '*z':      '\u0396',
+    '*h':      '\u0397',
+    '*q':      '\u0398',
+    '*i':      '\u0399',
+    '*k':      '\u039a',
+    '*l':      '\u039b',
+    '*m':      '\u039c',
+    '*n':      '\u039d',
+    '*c':      '\u039e',
+    '*o':      '\u039f',
+    '*p':      '\u03a0',
+    '*r':      '\u03a1',
+    '*s':      '\u03a3',
+    '*t':      '\u03a4',
+    '*u':      '\u03a5',
+    '*f':      '\u03a6',
+    '*x':      '\u03a7',
+    '*y':      '\u03a8',
+    '*w':      '\u03a9',
 
     # Acute and grave accent only
-    'a\\':    '\u1f70',
-    'a/':     '\u1f71',
-    'e\\':    '\u1f72',
-    'e/':     '\u1f73',
-    'h\\':    '\u1f74',
-    'h/':     '\u1f75',
-    'i\\':    '\u1f76',
-    'i/':     '\u1f77',
-    'o\\':    '\u1f78',
-    'o/':     '\u1f79',
-    'u\\':    '\u1f7a',
-    'u/':     '\u1f7b',
-    'w\\':    '\u1f7c',
-    'w/':     '\u1f7d',
-    '*a\\':   '\u1fba',
-    '*a/':    '\u1fbb',
-    '*e\\':   '\u1fce',
-    '*e/':    '\u1fc9',
-    '*h\\':   '\u1fca',
-    '*h/':    '\u1fcb',
-    '*i\\':   '\u1fda',
-    '*i/':    '\u1fdb',
-    '*o\\':   '\u1ff8',
-    '*o/':    '\u1ff9',
-    '*u\\':   '\u1fea',
-    '*u/':    '\u1feb',
-    '*w\\':   '\u1ffa',
-    '*w/':    '\u1ffb',
+    'a\\':     '\u1f70',
+    'a/':      '\u1f71',
+    'e\\':     '\u1f72',
+    'e/':      '\u1f73',
+    'h\\':     '\u1f74',
+    'h/':      '\u1f75',
+    'i\\':     '\u1f76',
+    'i/':      '\u1f77',
+    'o\\':     '\u1f78',
+    'o/':      '\u1f79',
+    'u\\':     '\u1f7a',
+    'u/':      '\u1f7b',
+    'w\\':     '\u1f7c',
+    'w/':      '\u1f7d',
+    '*a\\':    '\u1fba',
+    '*a/':     '\u1fbb',
+    '*e\\':    '\u1fce',
+    '*e/':     '\u1fc9',
+    '*h\\':    '\u1fca',
+    '*h/':     '\u1fcb',
+    '*i\\':    '\u1fda',
+    '*i/':     '\u1fdb',
+    '*o\\':    '\u1ff8',
+    '*o/':     '\u1ff9',
+    '*u\\':    '\u1fea',
+    '*u/':     '\u1feb',
+    '*w\\':    '\u1ffa',
+    '*w/':     '\u1ffb',
 
     # Comma / smooth breathing above only
     'a)':      '\u1f00',
@@ -299,9 +299,9 @@ _BETACODE_MAP = {
     'a(=|':   '\u1f87',
     'h(=|':   '\u1f97',
     'w(=|':   '\u1fa7',
-    '*a(=|':   '\u1f8f',
-    '*h(=|':   '\u1f9f',
-    '*w(=|':   '\u1faf',
+    '*a(=|':  '\u1f8f',
+    '*h(=|':  '\u1f9f',
+    '*w(=|':  '\u1faf',
 
     # Diaeresis combos
     'i+':     '\u03ca',
@@ -319,7 +319,11 @@ _BETACODE_MAP = {
     # Other punctuation
     # TODO: Look into punctuation more
     '\'': '\u1fbd',
+    ':': '·',
+    '_': '—',
 }
+
+_BETA_PUNCTUATION = frozenset('\':_')
 
 
 def _create_unicode_map():
@@ -388,31 +392,31 @@ def beta_to_uni(text):
     transform = []
     idx = 0
 
-    last_lookup_fail = False
+    possible_word_boundary = False
     while idx < len(text):
-        if last_lookup_fail and len(transform) > 1 and \
+        if possible_word_boundary and len(transform) > 1 and \
             transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
             transform[-2] = _FINAL_LC_SIGMA
 
         value, left = t.find_prefix(text[idx:])
 
         if value is None:
-            last_lookup_fail = True
+            possible_word_boundary = True
 
             transform.append(text[idx])
             idx += 1
         else:
-            last_lookup_fail = False
+            possible_word_boundary = text[idx] in _BETA_PUNCTUATION
 
             transform.append(value)
             idx += len(text) - idx - len(left)
 
     # Check one last time in case there is some whitespace or punctuation at the
     # end and check if the last character is a sigma.
-    if last_lookup_fail and len(transform) > 1 and \
+    if possible_word_boundary and len(transform) > 1 and \
         transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
         transform[-2] = _FINAL_LC_SIGMA
-    elif transform[-1] == _MEDIAL_LC_SIGMA:
+    elif len(transform) > 0 and transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
 
     converted = ''.join(transform)
