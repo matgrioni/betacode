@@ -61,6 +61,14 @@ Unicode to betacode
 The unicode text can use polytonic (oxeîa) or monotonic (tónos) accent
 marks and converesion will still be correct.
 
+Speed
+~~~~~
+
+The original implementation used a custom made trie. This maybe was not
+the fastest (I wasn't sure). So, I compared against a third party trie
+implementation, pygtrie. The pygtrie had nicer prefix methods which
+allowed for much faster processing of large files.
+
 .. |Build Status| image:: https://travis-ci.org/matgrioni/betacode.svg?branch=master
    :target: https://travis-ci.org/matgrioni/betacode
 .. |Coverage Status| image:: https://coveralls.io/repos/github/matgrioni/betacode/badge.svg?branch=master

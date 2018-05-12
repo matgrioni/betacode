@@ -1,7 +1,9 @@
 import itertools
 import unicodedata
 
-from betacode._trie import Trie
+import pygtrie
+
+_MAX_BETA_TOKEN_LEN = 5
 
 _FINAL_LC_SIGMA = '\u03c2'
 _MEDIAL_LC_SIGMA = '\u03c3'
@@ -326,6 +328,7 @@ _BETACODE_MAP = {
 _BETA_PUNCTUATION = frozenset('\':_')
 
 
+
 def _create_unicode_map():
     """
     Create the inverse map from unicode to betacode.
@@ -357,12 +360,15 @@ def _create_conversion_trie():
     Returns:
     The trie for conversion.
     """
-    t = Trie()
+    t = pygtrie.CharTrie()
 
     for beta, uni in _BETACODE_MAP.items():
         upper = '*' == beta[0]
         start = 2 if upper else 1
 
+        # Go through each betacode option and go through every permutation of
+        # accent marks. Allow, the accent marks to be before or after the
+        # letter.
         for perm in itertools.permutations(beta[start:]):
             joined = ''.join(perm)
             vals = [beta[start - 1] + joined, joined + beta[start - 1]]
@@ -370,7 +376,7 @@ def _create_conversion_trie():
                 vals = map(lambda el: '*' + el, vals)
 
             for val in vals:
-                t.add(val, uni)
+                t[val] = uni
 
     return t
 
@@ -398,18 +404,19 @@ def beta_to_uni(text):
             transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
             transform[-2] = _FINAL_LC_SIGMA
 
-        value, left = t.find_prefix(text[idx:])
+        step = t.longest_prefix(text[idx:idx + _MAX_BETA_TOKEN_LEN])
 
-        if value is None:
+        if step:
+            key, value = step
+            possible_word_boundary = text[idx] in _BETA_PUNCTUATION
+
+            transform.append(value)
+            idx += len(key)
+        else:
             possible_word_boundary = True
 
             transform.append(text[idx])
             idx += 1
-        else:
-            possible_word_boundary = text[idx] in _BETA_PUNCTUATION
-
-            transform.append(value)
-            idx += len(text) - idx - len(left)
 
     # Check one last time in case there is some whitespace or punctuation at the
     # end and check if the last character is a sigma.

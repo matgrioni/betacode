@@ -11,6 +11,9 @@ publish:
 test:
 	pytest
 
+rst:
+	pandoc --from=markdown --to=rst --output=README.rst README.md
+
 clean:
 	if [ -d 'dist' ]; then \
 		rm dist/*; \
