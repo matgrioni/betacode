@@ -23,7 +23,6 @@ setup(
     author_email = 'matgrioni@gmail.com',
     url = 'https://github.com/matgrioni/betacode',
     license = 'MIT',
-    python_requires = '>=3',
     keywords = ['encoding', 'unicode', 'betacode', 'greek'],
     classifiers = [
         'Programming Language :: Python',
