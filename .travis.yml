@@ -6,7 +6,6 @@ python:
 install:
     - pip install -r requirements.txt
     - pip install coveralls
-    - pip install coverage
 script:
     - coverage run --source=betacode setup.py test
 after_success:
