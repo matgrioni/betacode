@@ -15,8 +15,11 @@ publishtest:
 test:
 	pytest
 
-rst:
+docs:
 	pandoc --from=markdown --to=rst --output=README.rst README.md
+	pandoc --from=markdown --to=plain --output=README README.md
+	# Remove the first 3 lines of the README file which are badge related.
+	sed -i 1,3d README
 
 clean:
 	if [ -d 'dist' ]; then \

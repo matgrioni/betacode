@@ -67,7 +67,9 @@ Speed
 The original implementation used a custom made trie. This maybe was not
 the fastest (I wasn't sure). So, I compared against a third party trie
 implementation, pygtrie. The pygtrie had nicer prefix methods which
-allowed for much faster processing of large texts.
+allowed for much faster processing of large texts. This changed
+converting all of Strabo or Herodotus in the Perseus catalog from a many
+minute operation to a ~3-4 second operation.
 
 .. |Build Status| image:: https://travis-ci.org/matgrioni/betacode.svg?branch=master
    :target: https://travis-ci.org/matgrioni/betacode
