@@ -1,3 +1,6 @@
+build:
+	python setup.py build
+
 sdist:
 	python setup.py sdist
 
