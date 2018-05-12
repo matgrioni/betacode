@@ -1,9 +1,18 @@
+sdist:
+	python setup.py sdist
+
+publish:
+	python setup.py sdist
+	twine upload dist/*
+
 test:
 	pytest
 
 clean:
-	rm dist/*
-	rm build/*
+	if [ -d 'dist' ]; then \
+		rm dist/*; \
+	fi
 
-publish:
-	python setup.py sdist upload -r pypi
+	if [ -d 'build' ]; then \
+		rm build/*; \
+	fi
