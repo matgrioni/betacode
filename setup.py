@@ -18,10 +18,12 @@ setup(
     packages = ['betacode'],
     version = '0.1.4',
     description = 'Betacode to Unicode converter.',
-    long_description=read('README.rst'),
+    long_description = read('README.rst'),
     author = 'Matias Grioni',
     author_email = 'matgrioni@gmail.com',
     url = 'https://github.com/matgrioni/betacode',
+    license = 'MIT',
+    python_requires = '>=3',
     keywords = ['encoding', 'unicode', 'betacode', 'greek'],
     classifiers = [
         'Programming Language :: Python',
