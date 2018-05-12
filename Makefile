@@ -8,6 +8,10 @@ publish:
 	python setup.py sdist
 	twine upload dist/*
 
+publishtest:
+	python setup.py sdist
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
 test:
 	pytest
 
@@ -16,9 +20,9 @@ rst:
 
 clean:
 	if [ -d 'dist' ]; then \
-		rm dist/*; \
+		rm -r dist; \
 	fi
 
 	if [ -d 'build' ]; then \
-		rm build/*; \
+		rm -r build; \
 	fi
