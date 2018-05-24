@@ -4,7 +4,9 @@ betacode
 --------
 
 Convert betacode to unicode and vice-versa easily. Tested on python 3.4,
-3.5, and 3.6.
+3.5, and 3.6. The definition used is based off what is found at the `TLG
+Beta Code Manual <http://www.tlg.uci.edu/encoding/BCM.pdf>`__. Only the
+Greek sections were paid attention to.
 
 Install
 ~~~~~~~
@@ -22,7 +24,14 @@ Usage
 Note that in all examples, strings are unicode encoded. Input can be in
 upper or lower case. The official definition from TLG uses only
 uppercase, but many resources, such as the Perseus catalog, are encoded
-in lowercase.
+in lowercase. So, this package accepts both. This package also does not
+pay much attention to the cannonical order of Greek diacritics that is
+defined in the official definition. This is because it is unecessary.
+The only thing that matters in order for the betacode to be unambiguous
+is that each character must either begin with a ``*`` or a letter. As
+long as these constraints are followed, breathing marks, accents, and
+such can go in any order. However, the cannonical order will be returned
+when going from unicode to betacode.
 
 Betacode to unicode
 ^^^^^^^^^^^^^^^^^^^
@@ -38,18 +47,8 @@ Note that polytonic accent marks will be used, and not monotonic accent
 marks. Both are de jure equivalent in Greece, and betacode was initially
 developed to encode classic works. In other words, the oxeîa will be
 used rather than tónos. The oxeîa form can be converted to the modern
-accent form through unicode normalization which is easy in python.
-
-::
-
-    import unicodedata
-
-    import betacode.conv
-
-    beta = 'analabo/ntes de\ kaq\' e(/kaston'
-    uni = betacode.conv.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
-
-    unicodedata.normalize('NFC', uni) # Use the appropriate normalization ('NFC', 'NFKC', etc).
+accent form easily either through search and replace, or unicode
+normalization.
 
 Unicode to betacode
 ^^^^^^^^^^^^^^^^^^^
@@ -61,8 +60,7 @@ Unicode to betacode
     uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
     betacode.conv.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
 
-The unicode text can use polytonic (oxeîa) or monotonic (tónos) accent
-marks and converesion will still be correct.
+The unicode text should only use polytonic (oxeîa) accent marks.
 
 Speed
 ~~~~~
@@ -77,10 +75,19 @@ minute operation to a ~3-4 second operation.
 Modified Betacode
 ~~~~~~~~~~~~~~~~~
 
-There is talk of a modified betacode that I have seen. I have never been
-able to find a definitive definition of this so I have not implemented
-it. Among some differences is the use of ``ς`` for word final sigma,
-``_`` as macron, and uppercase and lowercase roman letters.
+There is talk of a modified betacode that I have seen around on the
+internet. I have never been able to find a definitive definition of this
+so I have not implemented it. Among some differences is word final sigma
+usage, ``_`` as macron, and uppercase and lowercase roman letters
+instead of using ``*``.
+
+Development
+-----------
+
+I am no classicist, and this was done in my free time. It is very
+possible that there are some letters missing that are not accounted for,
+or some punctuation that is not properly handled. If that is the case,
+please tell me as it is easy to fix, or please open a PR.
 
 .. |Build Status| image:: https://travis-ci.org/matgrioni/betacode.svg?branch=master
    :target: https://travis-ci.org/matgrioni/betacode
