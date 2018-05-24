@@ -99,3 +99,9 @@ def test_cap_out_of_order_with_iota():
     uni = 'Ἔφορος καἜὶ ἄλλοι ᾛ'
 
     _test_beta_uni_equality(beta, uni)
+
+def test_case_insensitive():
+    beta = '*)/eFoRos kA*)/Ei\ a/)Lloi *)H\|'
+    uni = 'Ἔφορος καἜὶ ἄλλοι ᾛ'
+
+    _test_beta_uni_equality(beta, uni)

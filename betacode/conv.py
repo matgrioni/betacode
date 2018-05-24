@@ -379,7 +379,9 @@ def _create_conversion_trie():
         perms = itertools.permutations(diacritics)
         for perm in perms:
             perm_str = beta[0] + ''.join(perm)
-            t[perm_str] = uni
+
+            t[perm_str.upper()] = uni
+            t[perm_str.lower()] = uni
 
     return t
 
