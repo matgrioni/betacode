@@ -2,7 +2,6 @@ import unicodedata
 
 import betacode.conv
 
-# TODO
 def _test_beta_uni_equality(beta, uni):
     """
     Test that the result of converting beta is uni.
@@ -31,9 +30,21 @@ def test_simple_conv():
 
     _test_beta_uni_equality(beta, uni)
 
-def test_final_sigma_string():
+def test_final_sigma():
     beta = 'th=s'
     uni = 'τῆς'
+
+    _test_beta_uni_equality(beta, uni)
+
+def test_numeric_sigma_id():
+    beta = 'th=s2'
+    uni = 'τῆς'
+
+    _test_beta_uni_equality(beta, uni)
+
+def test_keep_non_final_sigma_numeric():
+    beta = 'th=s3 tou='
+    uni = 'τῆϲ τοῦ'
 
     _test_beta_uni_equality(beta, uni)
 
@@ -70,5 +81,21 @@ def test_punctuation_semicolon():
 def test_punctuation_colon():
     beta = 'dh=lon: oi(/ te'
     uni = 'δῆλον· οἵ τε'
+
+    _test_beta_uni_equality(beta, uni)
+
+def test_out_of_order():
+    beta = 'e/)oiken h\) dida/skonti; nh\\ a=|)i+\\'
+    uni = 'ἔοικεν ἢ διδάσκοντι; νὴ ᾆῒ'
+
+def test_cap_out_of_order():
+    beta = '*)/eforos ka*)/ei\ a/)lloi'
+    uni = 'Ἔφορος καἜὶ ἄλλοι'
+
+    _test_beta_uni_equality(beta, uni)
+
+def test_cap_out_of_order_with_iota():
+    beta = '*)/eforos ka*)/ei\ a/)lloi *)h\|'
+    uni = 'Ἔφορος καἜὶ ἄλλοι ᾛ'
 
     _test_beta_uni_equality(beta, uni)
