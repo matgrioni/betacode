@@ -1,5 +1,8 @@
+import unicodedata
+
 import betacode.conv
 
+# TODO
 def _test_beta_uni_equality(beta, uni):
     """
     Test that the result of converting uni is beta.
@@ -8,7 +11,11 @@ def _test_beta_uni_equality(beta, uni):
     beta: The expected beta code result from conversion.
     uni: The unicode to convert.
     """
-    assert beta == betacode.conv.uni_to_beta(uni)
+    beta_normalized = unicodedata.normalize('NFC', beta)
+    conv = betacode.conv.uni_to_beta(uni)
+    conv_normalized = unicodedata.normalize('NFC', conv)
+
+    assert conv_normalized == beta_normalized
 
 def test_empty():
     uni = ''
@@ -23,19 +30,19 @@ def test_simple_conv():
     _test_beta_uni_equality(beta, uni)
 
 def test_multi_word():
-    uni = 'βίον τέχνης καὶ εὐδαιμονίας.'
+    uni = 'βίον τέχνης καὶ εὐδαιμονίας.'
     beta = 'bi/on te/xnhs kai\ eu)daimoni/as.'
 
     _test_beta_uni_equality(beta, uni)
 
 def test_many_accents():
     uni = 'Ἔφορος καὶ ἄλλοι'
-    beta = '*e)/foros kai\ a)/lloi'
+    beta = '*)/eforos kai\ a)/lloi'
 
     _test_beta_uni_equality(beta, uni)
 
 def test_colon_punc():
-    uni = 'πλείους: ἔτι δὲ οἱ μετὰ'
+    uni = 'πλείους: ἔτι δὲ οἱ μετὰ'
     beta = 'plei/ous: e)/ti de\ oi( meta\\'
 
     _test_beta_uni_equality(beta, uni)
