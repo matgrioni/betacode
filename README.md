@@ -15,7 +15,7 @@ pip install betacode
 
 ### Usage
 
-Note that in all examples, strings are unicode encoded. Input can be in upper or lower case. The official definition from TLG uses only uppercase, but many resources, such as the Perseus catalog, are encoded in lowercase. So, this package accepts both. This package also does not pay much attention to the cannonical order of Greek diacritics that is defined in the official definition. This is because it is unecessary. The only thing that matters in order for the betacode to be unambiguous is that each character must either begin with a `*` or a letter. As long as these constraints are followed, breathing marks, accents, and such can go in any order. However, the cannonical order will be returned when going from unicode to betacode.
+Note that in all examples, strings are unicode encoded. Input can be in upper or lower case. The official definition from TLG uses only uppercase, but many resources, such as the Perseus catalog, are encoded in lowercase. So, this package accepts both. This package also does not pay much attention to the cannonical order of Greek diacritics that is defined in the official definition. This is because it is unecessary. The only thing that matters in order for the betacode to be unambiguous is that each character must either begin with a `*` or a letter. As long as these constraints are followed, breathing marks, accents, and such can go in any order. However, the cannonical order will be returned when going from unicode to betacode. Also note that currently, only individual, non-combining characters are handled. This means that you cannot do all combinations of letters and diacritics.
 
 #### Betacode to unicode
 

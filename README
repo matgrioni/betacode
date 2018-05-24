@@ -23,7 +23,9 @@ The only thing that matters in order for the betacode to be unambiguous
 is that each character must either begin with a * or a letter. As long
 as these constraints are followed, breathing marks, accents, and such
 can go in any order. However, the cannonical order will be returned when
-going from unicode to betacode.
+going from unicode to betacode. Also note that currently, only
+individual, non-combining characters are handled. This means that you
+cannot do all combinations of letters and diacritics.
 
 Betacode to unicode
 
