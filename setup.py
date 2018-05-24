@@ -16,7 +16,7 @@ def read(fn):
 setup(
     name = 'betacode',
     packages = ['betacode'],
-    version = '0.1.4',
+    version = '0.1.5',
     description = 'Betacode to Unicode converter.',
     long_description = read('README.rst'),
     author = 'Matias Grioni',
