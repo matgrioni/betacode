@@ -7,13 +7,15 @@ def _test_beta_uni_equality(beta, uni):
     """
     Test that the result of converting beta is uni.
 
+    Comparison is done via the NFC normalization for unicode.
+
     Args:
     beta: The beta code to convert.
     uni: The expected unicode result from conversion.
     """
-    uni_normalized = unicodedata.normalize('NFC', uni)
     conv = betacode.conv.beta_to_uni(beta)
     conv_normalized = unicodedata.normalize('NFC', conv)
+    uni_normalized = unicodedata.normalize('NFC', uni)
 
     assert conv_normalized == uni_normalized
 
