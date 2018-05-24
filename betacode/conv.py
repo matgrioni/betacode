@@ -261,7 +261,7 @@ _BETACODE_MAP = {
     'a)\|':   '\u1f82',
     'h)\|':   '\u1f92',
     'w)\|':   '\u1fa2',
-    '*)\a|':  '\u1f8a',
+    '*)\\a|': '\u1f8a',
     '*)\h|':  '\u1f9a',
     '*)\w|':  '\u1faa',
 
@@ -269,7 +269,7 @@ _BETACODE_MAP = {
     'a(\|':   '\u1f83',
     'h)\|':   '\u1f93',
     'w)\|':   '\u1fa3',
-    '*(\a|':  '\u1f8b',
+    '*(\\a|': '\u1f8b',
     '*)\h|':  '\u1f9b',
     '*)\w|':  '\u1fab',
 
@@ -277,9 +277,9 @@ _BETACODE_MAP = {
     'a)/|':   '\u1f84',
     'h)/|':   '\u1f94',
     'w)/|':   '\u1fa4',
-    '*a)/|':  '\u1f8c',
-    '*h)/|':  '\u1f9c',
-    '*w)/|':  '\u1fac',
+    '*)/a|':  '\u1f8c',
+    '*)/h|':  '\u1f9c',
+    '*)/w|':  '\u1fac',
 
     # Rough breating, acute accent, and ypogegrammeni
     'a(/|':   '\u1f85',
@@ -374,21 +374,7 @@ def _create_conversion_trie():
         # accents between asterisk and letter or after letter. This does not
         # introduce ambiguity since each betacode token only has one letter and
         # either starts with a asterisk or a letter.
-        upper =  beta[0] == '*'
-        iota = beta[-1] == '|'
-
-        if iota and upper:
-            end = -2
-        elif upper:
-            end = -1
-        else:
-            end = len(beta)
-
-        diacritics = beta[1:end]
-        # If the iota is at the end after the letter, add it to the diacritic
-        # list whose order can be mixed up.
-        if iota and upper:
-            diacritics += '|'
+        diacritics = beta[1:]
 
         perms = itertools.permutations(diacritics)
         for perm in perms:
