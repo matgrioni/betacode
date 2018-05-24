@@ -19,7 +19,10 @@ from PyPI.
 Usage
 ~~~~~
 
-Note that in all examples, strings are unicode encoded.
+Note that in all examples, strings are unicode encoded. Input can be in
+upper or lower case. The official definition from TLG uses only
+uppercase, but many resources, such as the Perseus catalog, are encoded
+in lowercase.
 
 Betacode to unicode
 ^^^^^^^^^^^^^^^^^^^
@@ -70,6 +73,14 @@ implementation, pygtrie. The pygtrie had nicer prefix methods which
 allowed for much faster processing of large texts. This changed
 converting all of Strabo or Herodotus in the Perseus catalog from a many
 minute operation to a ~3-4 second operation.
+
+Modified Betacode
+~~~~~~~~~~~~~~~~~
+
+There is talk of a modified betacode that I have seen. I have never been
+able to find a definitive definition of this so I have not implemented
+it. Among some differences is the use of ``ς`` for word final sigma,
+``_`` as macron, and uppercase and lowercase roman letters.
 
 .. |Build Status| image:: https://travis-ci.org/matgrioni/betacode.svg?branch=master
    :target: https://travis-ci.org/matgrioni/betacode
