@@ -2,7 +2,6 @@ import unicodedata
 
 import betacode.conv
 
-# TODO
 def _test_uni_beta_equality(uni, beta):
     """
     Test that the result of converting uni is beta.
@@ -49,7 +48,7 @@ def test_colon_punc():
 
     _test_uni_beta_equality(uni, beta)
 
-def test_mixed_transfer():
+def test_mixed_conversion():
     uni = 'Many python packages cannot convert this: ἔτι δὲ οἱ'
     beta = 'Many python packages cannot convert this: e)/ti de\ oi('
 
