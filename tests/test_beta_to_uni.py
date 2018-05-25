@@ -2,7 +2,7 @@ import unicodedata
 
 import betacode.conv
 
-def _test_beta_uni_equality(beta, uni):
+def _test_beta_uni_equality(beta, uni, strict=False):
     """
     Test that the result of converting beta is uni.
 
@@ -11,8 +11,9 @@ def _test_beta_uni_equality(beta, uni):
     Args:
     beta: The beta code to convert.
     uni: The expected unicode result from conversion.
+    strict: Flag to set the strictness of betacode parsing.
     """
-    conv = betacode.conv.beta_to_uni(beta)
+    conv = betacode.conv.beta_to_uni(beta, strict)
     conv_normalized = unicodedata.normalize('NFC', conv)
     uni_normalized = unicodedata.normalize('NFC', uni)
 
@@ -61,8 +62,14 @@ def test_final_sigma_whitespace():
     _test_beta_uni_equality(beta, uni)
 
 def test_final_sigma_punctuation():
+    beta = 'th=s; tou='
+    uni = 'τῆς; τοῦ'
+
+    _test_beta_uni_equality(beta, uni)
+
+def test_final_sigma_apostrophe():
     beta = 'th=s\' tou='
-    uni = 'τῆς’ τοῦ'
+    uni = 'τῆσ’ τοῦ'
 
     _test_beta_uni_equality(beta, uni)
 
@@ -100,8 +107,26 @@ def test_cap_out_of_order_with_iota():
 
     _test_beta_uni_equality(beta, uni)
 
-def test_case_insensitive():
-    beta = '*)/eFoRos kA*)/Ei\ a/)Lloi *)H\|'
+def test_strict_correct():
+    beta = 'e)n d\' e)\pes\' w)keanw=|'
+    uni = 'ἐν δ’ ἒπεσ’ ὠκεανῷ'
+
+    _test_beta_uni_equality(beta, uni, strict=True)
+
+def test_strict_incorrect():
+    beta = 'e)n d\' e)\pes\' w)keanw|='
+    uni = 'ἐν δ’ ἒπεσ’ ὠκεανῳ='
+
+    _test_beta_uni_equality(beta, uni, strict=True)
+
+def test_unstrict():
+    beta = 'e)n d\' e)\pes\' w)keanw|='
+    uni = 'ἐν δ’ ἒπεσ’ ὠκεανῷ'
+
+    _test_beta_uni_equality(beta, uni, strict=False)
+
+def test_unstrict_capitalization():
+    beta = '*)e/foros ka*e)/i\ a/)lloi *)\h|'
     uni = 'Ἔφορος καἜὶ ἄλλοι ᾛ'
 
-    _test_beta_uni_equality(beta, uni)
+    _test_beta_uni_equality(beta, uni, strict=False)
