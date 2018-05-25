@@ -1,15 +1,3 @@
-# Combining marks for betacode
-BETA_COMBINING_MAP = {
-    ')':      '\u0313',
-    '(':      '\u0314',
-    '/':      '\u0301',
-    '=':      '\u0342',
-    '\\':     '\u0300',
-    '+':      '\u0308',
-    '|':      '\u0345',
-    '?':      '\u0323',
-}
-
 BETACODE_MAP = {
     # No marks
     'a':       '\u03b1',

@@ -11,24 +11,12 @@ _MEDIAL_LC_SIGMA = '\u03c3'
 
 # Punctuation marks in the betacode map
 _BETA_PUNCTUATION = frozenset('\':-_')
-
-# Individual letter marks. Add s1, s2, and s3 separately from other one betacode
-# characters.
-_BETA_LETTERS = set('abgdezhqiklmncoprstufxyw')
-_BETA_LETTERS.add(('s1',))
-_BETA_LETTERS.add(('s2',))
-_BETA_LETTERS.add(('s3',))
-_BETA_LETTERS = frozenset(_BETA_LETTERS)
+_BETA_APOSTROPHE = '\u2019'
 
 
-def _create_unicode_map(combining):
+def _create_unicode_map():
     """
     Create the inverse map from unicode to betacode.
-
-    Args:
-    combining: Flag for how to treat combining codepoints. If set, then they are
-        converted into the appropriate betacode form. Otherwise, they are not
-        converted at all.
 
     Returns:
     The hash map to convert unicode characters to the beta code representation.
@@ -46,24 +34,17 @@ def _create_unicode_map(combining):
     unicode_map[final_sigma_norm] = 's'
     unicode_map[_FINAL_LC_SIGMA] = 's'
 
-    if combining:
-        for beta, uni in _map.BETA_COMBINING_MAP.items():
-            unicode_map[uni] = beta
-
     return unicode_map
 
+_UNICODE_MAP = _create_unicode_map()
 
-def _create_conversion_trie(case, combining, strict):
+
+def _create_conversion_trie(strict):
     """
     Create the trie for betacode conversion.
 
     Args:
     text: The beta code text to convert. All of this text must be betacode.
-    case: Case sensitivity, so that if set, only upper case betacode will be
-        converted.
-    combining: Flag to allow for combining characters in unicode output so that
-        any combination of diacritics and letters are allowed. Non-combining
-        forms will always be preferred.
     strict: Flag to allow for flexible diacritic order on input.
 
     Returns:
@@ -84,15 +65,8 @@ def _create_conversion_trie(case, combining, strict):
             perms = itertools.permutations(diacritics)
             for perm in perms:
                 perm_str = beta[0] + ''.join(perm)
-
+                t[perm_str.lower()] = uni
                 t[perm_str.upper()] = uni
-
-                if not case:
-                    t[perm_str.lower()] = uni
-
-    if combining:
-        for beta, uni in _map.BETA_COMBINING_MAP.items():
-            t[beta] = uni
 
     return t
 
@@ -116,17 +90,12 @@ _MAX_BETA_TOKEN_LEN = _find_max_beta_token_len()
 
 
 _BETA_CONVERSION_TRIES = {}
-def beta_to_uni(text, case=False, combining=False, strict=False):
+def beta_to_uni(text, strict=False):
     """
     Converts the given text from betacode to unicode.
 
     Args:
     text: The beta code text to convert. All of this text must be betacode.
-    case: Case sensitivity, so that if set, only upper case betacode will be
-        converted.
-    combining: Flag to allow for combining characters in unicode output so that
-        any combination of diacritics and letters are allowed. Non-combining
-        forms will always be preferred.
     strict: Flag to allow for flexible diacritic order on input.
 
     Returns:
@@ -134,7 +103,7 @@ def beta_to_uni(text, case=False, combining=False, strict=False):
     """
     # Check if the requested configuration for conversion already has a trie
     # stored otherwise convert it.
-    param_key = (case, combining, strict)
+    param_key = (strict,)
     try:
        t = _BETA_CONVERSION_TRIES[param_key]
     except KeyError:
@@ -144,67 +113,34 @@ def beta_to_uni(text, case=False, combining=False, strict=False):
     transform = []
     idx = 0
     possible_word_boundary = False
-    in_middle_beta = False
-    current_middle_transform = ['']
 
     while idx < len(text):
         # TODO: Check if this logic works with many combining characters.
         if possible_word_boundary and len(transform) > 1 and \
-            transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
+            transform[-2] == _MEDIAL_LC_SIGMA and \
+            not transform[-1].isalnum() and \
+            transform[-1] != _BETA_APOSTROPHE:
             transform[-2] = _FINAL_LC_SIGMA
 
         step = t.longest_prefix(text[idx:idx + _MAX_BETA_TOKEN_LEN])
 
         if step:
-            if not in_middle_beta:
-                possible_word_boundary = text[idx] in _BETA_PUNCTUATION
-                key, value = step
+            possible_word_boundary = text[idx] in _BETA_PUNCTUATION
 
-                # To work with combining characters we have to properly combine when
-                # there is a capital letter and the combining characters can be in
-                # front of the letter and have to be moved to behind. In this case,
-                # the prefix makes an actual match but the rest might not.
-                if combining and key[0] == '*':
-                    next_transform = ['']
-                    for letter in key[1:]:
-                        if letter in _BETA_LETTERS:
-                            next_transform[0] = t['*' + letter]
-                        else:
-                            next_transform.append(t[letter])
-                    transform.extend(new_transform)
-                else:
-                    transform.append(value)
-
-                idx += len(key)
-            else:
-                # If we have encoutered a combining betacode character with an
-                # unrecognized prefix, then keep track of its characters.
-                key, value = step
-                if key in _BETA_LETTERS:
-                    current_middle_transform[0] = t['*' + key]
-                    transform.extend(current_middle_transform)
-
-                    in_middle_beta = False
-                    current_middle_transform.clear()
-                else:
-                    current_middle_transform.append(value)
-
+            key, value = step
+            transform.append(value)
+            idx += len(key)
         else:
             possible_word_boundary = True
 
-            # If the beginning of a combining capital betacode character is not
-            # recognized then keep track of it as we go.
-            if combining and text[idx] == '*':
-                in_middle_beta = True
-            else:
-                transform.append(text[idx])
-
+            transform.append(text[idx])
             idx += 1
 
     # Check one last time in case there is some whitespace or punctuation at the
     # end and check if the last character is a sigma.
     if possible_word_boundary and len(transform) > 1 and \
-        transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum():
+        transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum() and \
+        transform[-1] != _BETA_APOSTROPHE:
         transform[-2] = _FINAL_LC_SIGMA
     elif len(transform) > 0 and transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
@@ -212,8 +148,7 @@ def beta_to_uni(text, case=False, combining=False, strict=False):
     converted = ''.join(transform)
     return converted
 
-_UNI_CONVERSION_TRIES = {}
-def uni_to_beta(text, combining=True):
+def uni_to_beta(text):
     """
     Convert unicode text to a betacode equivalent.
 
@@ -223,18 +158,11 @@ def uni_to_beta(text, combining=True):
     text: The text to convert to betacode. This text does not have to all be
         Greek polytonic text, and only Greek characters will be converted. Note
         that in this case, you cannot convert to beta and then back to unicode.
-    combining: Flag that is set to encode combining codepoints into the betacode
-        equivalent.
 
     Returns:
     The betacode equivalent of the inputted text where applicable.
     """
-    param_key = (combining,)
-    try:
-        u = _UNI_CONVERSION_TRIES[param_key]
-    except KeyError:
-        u = _create_unicode_map(*param_key)
-        _UNI_CONVERSION_TRIES[param_key] = u
+    u = _UNICODE_MAP
 
     transform = []
 
