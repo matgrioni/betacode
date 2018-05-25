@@ -25,12 +25,12 @@ def _create_unicode_map():
 
     for beta, uni in _map.BETACODE_MAP.items():
         # Include decomposed equivalent where necessary.
-        norm = unicodedata.normalize('NFD', uni)
+        norm = unicodedata.normalize('NFC', uni)
         unicode_map[norm] = beta
         unicode_map[uni] = beta
 
     # Add the final sigmas.
-    final_sigma_norm = unicodedata.normalize('NFD', _FINAL_LC_SIGMA)
+    final_sigma_norm = unicodedata.normalize('NFC', _FINAL_LC_SIGMA)
     unicode_map[final_sigma_norm] = 's'
     unicode_map[_FINAL_LC_SIGMA] = 's'
 
@@ -88,6 +88,10 @@ def _find_max_beta_token_len():
 
 _MAX_BETA_TOKEN_LEN = _find_max_beta_token_len()
 
+def _penultimate_sigma_word_final(text):
+    return len(text) > 1 and text[-2] == _MEDIAL_LC_SIGMA and \
+        not text[-1].isalnum() and text[-1] != _BETA_APOSTROPHE
+
 
 _BETA_CONVERSION_TRIES = {}
 def beta_to_uni(text, strict=False):
@@ -115,11 +119,7 @@ def beta_to_uni(text, strict=False):
     possible_word_boundary = False
 
     while idx < len(text):
-        # TODO: Check if this logic works with many combining characters.
-        if possible_word_boundary and len(transform) > 1 and \
-            transform[-2] == _MEDIAL_LC_SIGMA and \
-            not transform[-1].isalnum() and \
-            transform[-1] != _BETA_APOSTROPHE:
+        if possible_word_boundary and _penultimate_sigma_word_final(transform):
             transform[-2] = _FINAL_LC_SIGMA
 
         step = t.longest_prefix(text[idx:idx + _MAX_BETA_TOKEN_LEN])
@@ -138,9 +138,7 @@ def beta_to_uni(text, strict=False):
 
     # Check one last time in case there is some whitespace or punctuation at the
     # end and check if the last character is a sigma.
-    if possible_word_boundary and len(transform) > 1 and \
-        transform[-2] == _MEDIAL_LC_SIGMA and not transform[-1].isalnum() and \
-        transform[-1] != _BETA_APOSTROPHE:
+    if possible_word_boundary and _penultimate_sigma_word_final(transform):
         transform[-2] = _FINAL_LC_SIGMA
     elif len(transform) > 0 and transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
