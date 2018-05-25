@@ -47,10 +47,11 @@ Betacode to unicode
 
 Note that polytonic accent marks will be used, and not monotonic accent
 marks. Both are de jure equivalent in Greece, and betacode was initially
-developed to encode classic works. In other words, the oxeîa will be
-used rather than tónos. The oxeîa form can be converted to the modern
-accent form easily either through search and replace, or unicode
-normalization.
+developed to encode classic works so the polytonic diacritics are more
+fitting. In other words, the oxeîa will be used rather than tónos. The
+oxeîa form can be converted to the modern accent form easily either
+through search and replace, or unicode normalization since oxeîa has
+canonical decomposition into tónos.
 
 Unicode to betacode
 ^^^^^^^^^^^^^^^^^^^
