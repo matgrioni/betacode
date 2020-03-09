@@ -11,7 +11,8 @@ def read(fn):
     Returns:
     The text contents of the file.
     """
-    return open(os.path.join(os.path.dirname(__file__), fn)).read()
+    with open(os.path.join(os.path.dirname(__file__), fn), encoding='utf-8') as f:
+        return f.read()
 
 setup(
     name = 'betacode',
