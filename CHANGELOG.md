@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 Although there have been previous versions of this software, I do not think there have been previous users so this will be the first version that is kept track of.
 
+## 1.0 - 2020-03-08
+### Fixed
+- Windows installation did not work since default encoding on Windows is CP-1252 and README read in during setup.py is encoded in UTF-8.
+
 ## 0.2 - 2018-05-25
 ### Added
 - Use strict or non-strict mode when coverting from betacode to unicode
