@@ -35,4 +35,10 @@ setup(
         'Topic :: Text Processing :: Linguistic',
         'Natural Language :: Greek',
     ],
+    entry_points={
+        "console_scripts": [
+            "beta-to-uni=betacode.cli:beta_to_uni_cli",
+            "uni-to-beta=betacode.cli:uni_to_beta_cli",
+        ]
+    },
 )

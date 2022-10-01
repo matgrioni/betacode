@@ -50,6 +50,22 @@ betacode.conv.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
 
 The unicode text can use polytonic (oxeîa) accent marks or monotonic (tónos) accent marks can be used.
 
+#### Command line tool
+
+The terminal commands `beta-to-uni` and `uni-to-beta` are provided with this package, that allow a conversion directly from the terminal. They are registered automatically when installing this package. Usage:
+
+```sh
+$ beta-to-uni "h( morfh\ kai\ to\ ei)=dos to\ kata\ to\n lo/gon"   
+ἡ μορφὴ καὶ τὸ εἶδος τὸ κατὰ τὸν λόγον
+```
+
+NB: It is possible to avoid the quotation marks in the conversion, but please note that some diacritical marks need to be escaped, because they are part of the shell script syntax:
+
+```sh
+$ beta-to-uni h\( morfh\\ kai\\ to\\ ei\)=dos to\\ kata\\ to\\n lo/gon
+ἡ μορφὴ καὶ τὸ εἶδος τὸ κατὰ τὸν λόγον
+```
+
 ### Speed
 
 The original implementation used a custom made trie. This maybe was not the fastest (I wasn't sure). So, I compared against a third party trie implementation, pygtrie. The pygtrie had nicer prefix methods which allowed for much faster processing of large texts. This changed converting all of Strabo or Herodotus in the Perseus catalog from a many minute operation to a ~3-4 second operation. I have seen implementations that use regular expressions which I suspsect might be faster since the underlying implementation is in C. However, this package is much smaller and simpler if betacode conversion is all that is needed than CLTK, for example.
