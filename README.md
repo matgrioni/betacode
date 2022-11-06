@@ -66,6 +66,20 @@ $ beta-to-uni h\( morfh\\ kai\\ to\\ ei\)=dos to\\ kata\\ to\\n lo/gon
 ἡ μορφὴ καὶ τὸ εἶδος τὸ κατὰ τὸν λόγον
 ```
 
+Both commands also support a `--input` flag (abbreviated as `-i`), allowing for file input:
+
+```sh
+$ beta-to-uni --input some_input_file.txt
+```
+
+Since `--input` reads from stdin by default and the result is always returned to stdout, all sorts of command chaining are possible, e.g.:
+
+```sh
+$ beta-to-uni < some_input_file.txt > some_output_file.txt
+$ echo λόγος | uni-to-beta
+$ cat some_input_file.txt | beta-to-uni
+```
+
 ### Speed
 
 The original implementation used a custom made trie. This maybe was not the fastest (I wasn't sure). So, I compared against a third party trie implementation, pygtrie. The pygtrie had nicer prefix methods which allowed for much faster processing of large texts. This changed converting all of Strabo or Herodotus in the Perseus catalog from a many minute operation to a ~3-4 second operation. I have seen implementations that use regular expressions which I suspsect might be faster since the underlying implementation is in C. However, this package is much smaller and simpler if betacode conversion is all that is needed than CLTK, for example.
