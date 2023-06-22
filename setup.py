@@ -17,6 +17,10 @@ def read(fn):
 setup(
     name = 'betacode',
     packages = ['betacode'],
+    install_requires = [
+        'pygtrie >= 2.2, <3',
+        'click >= 8.1,< 9',
+    ],
     version = '1.0',
     description = 'Betacode to Unicode converter.',
     long_description = read('README.rst'),
@@ -35,4 +39,10 @@ setup(
         'Topic :: Text Processing :: Linguistic',
         'Natural Language :: Greek',
     ],
+    entry_points={
+        'console_scripts': [
+            'beta-to-uni=betacode.cli:beta_to_uni_cli',
+            'uni-to-beta=betacode.cli:uni_to_beta_cli',
+        ]
+    },
 )
