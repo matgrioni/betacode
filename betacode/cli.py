@@ -19,6 +19,13 @@ strict_option = click.option(
     default=False,
     help="Flag to disallow flexible diacritic order on input.",
 )
+continuous_option = click.option(
+    "--continuous",
+    "-c",
+    "continuous",
+    is_flag=True,
+    help="Turn on continuous mode for repeated conversions.",
+)
 
 
 def get_input_string(text, input_file):
@@ -29,14 +36,26 @@ def get_input_string(text, input_file):
 @text_argument
 @input_option
 @strict_option
-def beta_to_uni_cli(text, input_file, strict):
-    text_input = get_input_string(text, input_file)
-    click.echo(beta_to_uni(text_input, strict))
+@continuous_option
+def beta_to_uni_cli(text, input_file, strict, continuous):
+    if continuous:
+        while True:
+            text_input = input("> ")
+            click.echo(beta_to_uni(text_input, strict))
+    else:
+        text_input = get_input_string(text, input_file)
+        click.echo(beta_to_uni(text_input, strict))
 
 
 @click.command()
 @text_argument
 @input_option
-def uni_to_beta_cli(text, input_file):
-    text_input = get_input_string(text, input_file)
-    click.echo(uni_to_beta(text_input))
+@continuous_option
+def uni_to_beta_cli(text, input_file, continuous):
+    if continuous:
+        while True:
+            text_input = input("> ")
+            click.echo(uni_to_beta(text_input))
+    else:
+        text_input = get_input_string(text, input_file)
+        click.echo(uni_to_beta(text_input))
