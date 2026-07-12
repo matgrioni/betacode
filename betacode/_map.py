@@ -27,6 +27,7 @@ BETACODE_MAP = {
     'x':       '\u03c7',
     'y':       '\u03c8',
     'w':       '\u03c9',
+    'v':       '\u03dd',
     '*a':      '\u0391',
     '*b':      '\u0392',
     '*g':      '\u0393',
@@ -52,6 +53,7 @@ BETACODE_MAP = {
     '*x':      '\u03a7',
     '*y':      '\u03a8',
     '*w':      '\u03a9',
+    '*v':      '\u03dc',
 
     # Smooth breathing
     'a)':      '\u1f00',
