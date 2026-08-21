@@ -19,7 +19,7 @@ setup(
     packages = ['betacode'],
     version = '1.0',
     description = 'Betacode to Unicode converter.',
-    long_description = read('README.rst'),
+    long_description = read('README.md'),
     author = 'Matias Grioni',
     author_email = 'matgrioni@gmail.com',
     url = 'https://github.com/matgrioni/betacode',
