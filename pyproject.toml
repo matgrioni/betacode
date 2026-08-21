@@ -1,0 +1,29 @@
+[project]
+name = "betacode"
+version = "1.1"
+authors = [{ name = "Matias Grioni", email = "matgrioni@gmail.com" }]
+description = "Betacode to Unicode Converter"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+keywords = ["encoding", "unicode", "betacode", "greek"]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: MIT License',
+    'Natural Language :: Greek',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Topic :: Text Processing :: Linguistic'
+]
+dependencies = [
+    "pygtrie>=2.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.5.1",
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+]
