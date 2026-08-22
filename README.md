@@ -3,7 +3,7 @@
 
 ## betacode
 
-Convert betacode to unicode and vice-versa easily. Tested on python 3.4, 3.5, and 3.6. The definition used is based off what is found at the [TLG Beta Code Manual](http://www.tlg.uci.edu/encoding/BCM.pdf). Only the Greek sections were paid attention to.
+Convert betacode to unicode and vice-versa easily. The definition used is based off what is found at the [TLG Beta Code Manual](http://www.tlg.uci.edu/encoding/BCM.pdf). Only the Greek sections were paid attention to.
 
 ## Motivation
 
