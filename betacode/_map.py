@@ -247,23 +247,23 @@ BETACODE_MAP = {
     "*(h|":   "\u1f99",
     "*(w|":   "\u1fa9",
 
-    # Smooth breathing, acute accent, and ypogegrammeni
-    "a)\|":   "\u1f82",
-    "h)\|":   "\u1f92",
-    "w)\|":   "\u1fa2",
+    # Smooth breathing, grave accent, and ypogegrammeni
+    "a)\\|":   "\u1f82",
+    "h)\\|":   "\u1f92",
+    "w)\\|":   "\u1fa2",
     "*)\\a|": "\u1f8a",
-    "*)\h|":  "\u1f9a",
-    "*)\w|":  "\u1faa",
+    "*)\\h|":  "\u1f9a",
+    "*)\\w|":  "\u1faa",
 
     # Rough breathing, grave accent, and ypogegrammeni
-    "a(\|":   "\u1f83",
-    "h)\|":   "\u1f93",
-    "w)\|":   "\u1fa3",
+    "a(\\|":   "\u1f83",
+    "h)\\|":   "\u1f93",
+    "w)\\|":   "\u1fa3",
     "*(\\a|": "\u1f8b",
-    "*)\h|":  "\u1f9b",
-    "*)\w|":  "\u1fab",
+    "*)\\h|":  "\u1f9b",
+    "*)\\w|":  "\u1fab",
 
-    # Smooth breathing, accute accent, and ypogegrammeni
+    # Smooth breathing, acute accent, and ypogegrammeni
     "a)/|":   "\u1f84",
     "h)/|":   "\u1f94",
     "w)/|":   "\u1fa4",
