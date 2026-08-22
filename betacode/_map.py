@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+
 BETACODE_MAP: Mapping[str, str] = {
     # No marks
     "a": "\u03b1",

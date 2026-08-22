@@ -1,3 +1,4 @@
+from collections.abc import MutableMapping
 import itertools
 import unicodedata
 
@@ -19,7 +20,7 @@ def _create_unicode_map():
     Create the inverse map from unicode to betacode.
 
     Returns:
-    The hash map to convert unicode characters to the beta code representation.
+        The hash map to convert unicode characters to the beta code representation.
     """
     unicode_map = {}
 
@@ -40,16 +41,16 @@ def _create_unicode_map():
 _UNICODE_MAP = _create_unicode_map()
 
 
-def _create_conversion_trie(strict):
+def _create_conversion_trie(strict: bool) -> pygtrie.CharTrie:
     """
     Create the trie for betacode conversion.
 
     Args:
-    text: The beta code text to convert. All of this text must be betacode.
-    strict: Flag to allow for flexible diacritic order on input.
+        text: The beta code text to convert. All of this text must be betacode.
+        strict: Flag to allow for flexible diacritic order on input.
 
     Returns:
-    The trie for conversion.
+        The trie for conversion.
     """
     t = pygtrie.CharTrie()
 
@@ -77,8 +78,8 @@ def _find_max_beta_token_len():
     Finds the maximum length of a single betacode token.
 
     Returns:
-    The length of the longest key in the betacode map, which corresponds to the
-    longest single betacode token.
+        The length of the longest key in the betacode map, which corresponds to the
+        longest single betacode token.
     """
     max_beta_len = -1
     for beta, uni in _map.BETACODE_MAP.items():
@@ -100,7 +101,7 @@ def _penultimate_sigma_word_final(text):
     )
 
 
-_BETA_CONVERSION_TRIES = {}
+_BETA_CONVERSION_TRIES: MutableMapping[tuple, pygtrie.CharTrie] = {}
 
 
 def beta_to_uni(text: str, strict: bool = False) -> str:
@@ -108,11 +109,11 @@ def beta_to_uni(text: str, strict: bool = False) -> str:
     Converts the given text from betacode to unicode.
 
     Args:
-    text: The beta code text to convert. All of this text must be betacode.
-    strict: Flag to allow for flexible diacritic order on input.
+        text: The beta code text to convert. All of this text must be betacode.
+        strict: Flag to allow for flexible diacritic order on input.
 
     Returns:
-    The converted text.
+        The converted text.
     """
     # Check if the requested configuration for conversion already has a trie
     # stored otherwise convert it.
@@ -163,12 +164,12 @@ def uni_to_beta(text: str) -> str:
     This method can handle tónos or oxeîa characters in the input.
 
     Args:
-    text: The text to convert to betacode. This text does not have to all be
-        Greek polytonic text, and only Greek characters will be converted. Note
-        that in this case, you cannot convert to beta and then back to unicode.
+        text: The text to convert to betacode. This text does not have to all be
+            Greek polytonic text, and only Greek characters will be converted. Note
+            that in this case, you cannot convert to beta and then back to unicode.
 
     Returns:
-    The betacode equivalent of the inputted text where applicable.
+        The betacode equivalent of the inputted text where applicable.
     """
     u = _UNICODE_MAP
 
