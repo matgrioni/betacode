@@ -1,3 +1,7 @@
+"""
+Defines the main entry point methods to convert between betacode and unicode.
+"""
+
 from collections.abc import MutableMapping
 import itertools
 import unicodedata
@@ -73,7 +77,7 @@ def _create_conversion_trie(strict: bool) -> pygtrie.CharTrie:
     return t
 
 
-def _find_max_beta_token_len():
+def _find_max_beta_token_len() -> int:
     """
     Finds the maximum length of a single betacode token.
 
@@ -81,18 +85,13 @@ def _find_max_beta_token_len():
         The length of the longest key in the betacode map, which corresponds to the
         longest single betacode token.
     """
-    max_beta_len = -1
-    for beta, uni in _map.BETACODE_MAP.items():
-        if len(beta) > max_beta_len:
-            max_beta_len = len(beta)
-
-    return max_beta_len
+    return max(map(len, _map.BETACODE_MAP), default=-1)
 
 
 _MAX_BETA_TOKEN_LEN = _find_max_beta_token_len()
 
 
-def _penultimate_sigma_word_final(text):
+def _penultimate_sigma_word_final(text: str) -> bool:
     return (
         len(text) > 1
         and text[-2] == _MEDIAL_LC_SIGMA

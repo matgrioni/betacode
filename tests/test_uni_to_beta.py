@@ -36,27 +36,27 @@ def test_simple_conv():
 
 def test_multi_word():
     uni = "βίον τέχνης καὶ εὐδαιμονίας."
-    beta = "bi/on te/xnhs kai\ eu)daimoni/as."
+    beta = "bi/on te/xnhs kai\\ eu)daimoni/as."
 
     _test_uni_beta_equality(uni, beta)
 
 
 def test_many_accents():
     uni = "Ἔφορος καὶ ἄλλοι"
-    beta = "*)/eforos kai\ a)/lloi"
+    beta = "*)/eforos kai\\ a)/lloi"
 
     _test_uni_beta_equality(uni, beta)
 
 
 def test_colon_punc():
     uni = "πλείους: ἔτι δὲ οἱ μετὰ"
-    beta = "plei/ous: e)/ti de\ oi( meta\\"
+    beta = "plei/ous: e)/ti de\\ oi( meta\\"
 
     _test_uni_beta_equality(uni, beta)
 
 
 def test_mixed_conversion():
     uni = "Many python packages cannot convert this: ἔτι δὲ οἱ"
-    beta = "Many python packages cannot convert this: e)/ti de\ oi("
+    beta = "Many python packages cannot convert this: e)/ti de\\ oi("
 
     _test_uni_beta_equality(uni, beta)

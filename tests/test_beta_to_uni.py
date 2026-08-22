@@ -85,14 +85,14 @@ def test_final_sigma_apostrophe():
 
 
 def test_multi_word():
-    beta = "analabo/ntes de\ kaq' e(/kaston"
+    beta = "analabo/ntes de\\ kaq' e(/kaston"
     uni = "αναλαβόντες δὲ καθ’ ἕκαστον"
 
     _test_beta_uni_equality(beta, uni)
 
 
 def test_punctuation_semicolon():
-    beta = "e)/oiken h)\ dida/skonti; nh\\"
+    beta = "e)/oiken h)\\ dida/skonti; nh\\"
     uni = "ἔοικεν ἢ διδάσκοντι; νὴ"
 
     _test_beta_uni_equality(beta, uni)
@@ -106,47 +106,49 @@ def test_punctuation_colon():
 
 
 def test_out_of_order():
-    beta = "e/)oiken h\) dida/skonti; nh\\ a=|)i+\\"
+    beta = "e/)oiken h\\) dida/skonti; nh\\ a=|)i+\\"
     uni = "ἔοικεν ἢ διδάσκοντι; νὴ ᾆῒ"
+
+    _test_beta_uni_equality(beta, uni)
 
 
 def test_cap_out_of_order():
-    beta = "*)/eforos ka*)/ei\ a/)lloi"
+    beta = "*)/eforos ka*)/ei\\ a/)lloi"
     uni = "Ἔφορος καἜὶ ἄλλοι"
 
     _test_beta_uni_equality(beta, uni)
 
 
 def test_cap_out_of_order_with_iota():
-    beta = "*)/eforos ka*)/ei\ a/)lloi *)h\|"
+    beta = "*)/eforos ka*)/ei\\ a/)lloi *)h\\|"
     uni = "Ἔφορος καἜὶ ἄλλοι ᾛ"
 
     _test_beta_uni_equality(beta, uni)
 
 
 def test_strict_correct():
-    beta = "e)n d' e)\pes' w)keanw=|"
+    beta = "e)n d' e)\\pes' w)keanw=|"
     uni = "ἐν δ’ ἒπεσ’ ὠκεανῷ"
 
     _test_beta_uni_equality(beta, uni, strict=True)
 
 
 def test_strict_incorrect():
-    beta = "e)n d' e)\pes' w)keanw|="
+    beta = "e)n d' e)\\pes' w)keanw|="
     uni = "ἐν δ’ ἒπεσ’ ὠκεανῳ="
 
     _test_beta_uni_equality(beta, uni, strict=True)
 
 
 def test_unstrict():
-    beta = "e)n d' e)\pes' w)keanw|="
+    beta = "e)n d' e)\\pes' w)keanw|="
     uni = "ἐν δ’ ἒπεσ’ ὠκεανῷ"
 
     _test_beta_uni_equality(beta, uni, strict=False)
 
 
 def test_unstrict_capitalization():
-    beta = "*)e/foros ka*e)/i\ a/)lloi *)\h|"
+    beta = "*)e/foros ka*e)/i\\ a/)lloi *)\\h|"
     uni = "Ἔφορος καἜὶ ἄλλοι ᾛ"
 
     _test_beta_uni_equality(beta, uni, strict=False)
