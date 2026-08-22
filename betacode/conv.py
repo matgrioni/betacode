@@ -6,12 +6,12 @@ import pygtrie
 from . import _map
 
 # Special characters that need their own references to rewrite with
-_FINAL_LC_SIGMA = '\u03c2'
-_MEDIAL_LC_SIGMA = '\u03c3'
+_FINAL_LC_SIGMA = "\u03c2"
+_MEDIAL_LC_SIGMA = "\u03c3"
 
 # Punctuation marks in the betacode map
-_BETA_PUNCTUATION = frozenset('\':-_')
-_BETA_APOSTROPHE = '\u2019'
+_BETA_PUNCTUATION = frozenset("':-_")
+_BETA_APOSTROPHE = "\u2019"
 
 
 def _create_unicode_map():
@@ -25,16 +25,17 @@ def _create_unicode_map():
 
     for beta, uni in _map.BETACODE_MAP.items():
         # Include decomposed equivalent where necessary.
-        norm = unicodedata.normalize('NFC', uni)
+        norm = unicodedata.normalize("NFC", uni)
         unicode_map[norm] = beta
         unicode_map[uni] = beta
 
     # Add the final sigmas.
-    final_sigma_norm = unicodedata.normalize('NFC', _FINAL_LC_SIGMA)
-    unicode_map[final_sigma_norm] = 's'
-    unicode_map[_FINAL_LC_SIGMA] = 's'
+    final_sigma_norm = unicodedata.normalize("NFC", _FINAL_LC_SIGMA)
+    unicode_map[final_sigma_norm] = "s"
+    unicode_map[_FINAL_LC_SIGMA] = "s"
 
     return unicode_map
+
 
 _UNICODE_MAP = _create_unicode_map()
 
@@ -64,7 +65,7 @@ def _create_conversion_trie(strict):
 
             perms = itertools.permutations(diacritics)
             for perm in perms:
-                perm_str = beta[0] + ''.join(perm)
+                perm_str = beta[0] + "".join(perm)
                 t[perm_str.lower()] = uni
                 t[perm_str.upper()] = uni
 
@@ -86,15 +87,23 @@ def _find_max_beta_token_len():
 
     return max_beta_len
 
+
 _MAX_BETA_TOKEN_LEN = _find_max_beta_token_len()
 
+
 def _penultimate_sigma_word_final(text):
-    return len(text) > 1 and text[-2] == _MEDIAL_LC_SIGMA and \
-        not text[-1].isalnum() and text[-1] != _BETA_APOSTROPHE
+    return (
+        len(text) > 1
+        and text[-2] == _MEDIAL_LC_SIGMA
+        and not text[-1].isalnum()
+        and text[-1] != _BETA_APOSTROPHE
+    )
 
 
 _BETA_CONVERSION_TRIES = {}
-def beta_to_uni(text, strict=False):
+
+
+def beta_to_uni(text: str, strict: bool = False) -> str:
     """
     Converts the given text from betacode to unicode.
 
@@ -109,7 +118,7 @@ def beta_to_uni(text, strict=False):
     # stored otherwise convert it.
     param_key = (strict,)
     try:
-       t = _BETA_CONVERSION_TRIES[param_key]
+        t = _BETA_CONVERSION_TRIES[param_key]
     except KeyError:
         t = _create_conversion_trie(*param_key)
         _BETA_CONVERSION_TRIES[param_key] = t
@@ -122,7 +131,7 @@ def beta_to_uni(text, strict=False):
         if possible_word_boundary and _penultimate_sigma_word_final(transform):
             transform[-2] = _FINAL_LC_SIGMA
 
-        step = t.longest_prefix(text[idx:idx + _MAX_BETA_TOKEN_LEN])
+        step = t.longest_prefix(text[idx : idx + _MAX_BETA_TOKEN_LEN])
 
         if step:
             possible_word_boundary = text[idx] in _BETA_PUNCTUATION
@@ -143,10 +152,11 @@ def beta_to_uni(text, strict=False):
     elif len(transform) > 0 and transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
 
-    converted = ''.join(transform)
+    converted = "".join(transform)
     return converted
 
-def uni_to_beta(text):
+
+def uni_to_beta(text: str) -> str:
     """
     Convert unicode text to a betacode equivalent.
 
@@ -172,5 +182,5 @@ def uni_to_beta(text):
 
         transform.append(conv)
 
-    converted = ''.join(transform)
+    converted = "".join(transform)
     return converted
