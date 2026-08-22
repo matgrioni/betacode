@@ -6,6 +6,7 @@ description = "Betacode to Unicode Converter"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
+dynamic = ["version"]
 keywords = ["encoding", "unicode", "betacode", "greek"]
 classifiers = [
     'Development Status :: 5 - Production/Stable',
@@ -30,7 +31,21 @@ dev = [
     "pytest>=9.1.1",
 ]
 
+[project.urls]
+homepage = "https://github.com/matgrioni/betacode"
+source = "https://github.com/matgrioni/betacode"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [tool.black]
 line-length = 100
 target-version = ["py310"]
 preview = true
+
+[tool.setuptools.dynamic]
+version = { file = "betacode/_version" }
+
+[tool.setuptools.package-data]
+pyconll = ["py.typed", "_version"]
