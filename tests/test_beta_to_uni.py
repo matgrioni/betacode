@@ -121,7 +121,7 @@ def test_cap_out_of_order():
 
 def test_cap_out_of_order_with_iota():
     beta = "*)/eforos ka*)/ei\\ a/)lloi *)h\\|"
-    uni = "Ἔφορος καἜὶ ἄλλοι ᾛ"
+    uni = "Ἔφορος καἜὶ ἄλλοι ᾚ"
 
     _test_beta_uni_equality(beta, uni)
 
@@ -144,11 +144,11 @@ def test_unstrict():
     beta = "e)n d' e)\\pes' w)keanw|="
     uni = "ἐν δ’ ἒπεσ’ ὠκεανῷ"
 
-    _test_beta_uni_equality(beta, uni, strict=False)
+    _test_beta_uni_equality(beta, uni)
 
 
 def test_unstrict_capitalization():
     beta = "*)e/foros ka*e)/i\\ a/)lloi *)\\h|"
-    uni = "Ἔφορος καἜὶ ἄλλοι ᾛ"
+    uni = "Ἔφορος καἜὶ ἄλλοι ᾚ"
 
-    _test_beta_uni_equality(beta, uni, strict=False)
+    _test_beta_uni_equality(beta, uni)
