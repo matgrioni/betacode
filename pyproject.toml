@@ -21,6 +21,9 @@ dependencies = [
     "pygtrie>=2.5.0",
 ]
 
+[project.scripts]
+betacode = "betacode.cli:main"
+
 [dependency-groups]
 dev = [
     "black>=26.5.1",

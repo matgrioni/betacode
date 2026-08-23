@@ -50,6 +50,46 @@ betacode.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
 
 The unicode text can use polytonic (oxeîa) accent marks or monotonic (tónos) accent marks can be used.
 
+### Command line usage
+
+Installing the package also installs a `betacode` command with two subcommands, `to-unicode` and `to-beta`. Each accepts one of `-t`/`--text` for raw text on the command line, `-f`/`--file` for a file to convert, or `-i`/`--interactive` for a continuous, REPL-like session.
+
+Convert raw text given directly on the command line:
+
+```
+betacode to-unicode --text "lo/gos"
+# λόγος
+```
+
+```
+betacode to-beta --text "λόγος"
+# lo/gos
+```
+
+Add `--strict` to `to-unicode` to only accept the canonical diacritic order:
+
+```
+betacode to-unicode --strict --text "lo/gos"
+```
+
+Convert the contents of a file, writing the result to stdout:
+
+```
+betacode to-unicode --file input.txt > output.txt
+```
+
+Start a continuous session, where each line entered is converted and printed until you exit with `Ctrl-D`:
+
+```
+$ betacode to-unicode --interactive
+Entering continuous mode. Press Ctrl-D (or Ctrl-Z on Windows) to exit.
+>> lo/gos
+λόγος
+>> kalo/s
+καλός
+>>
+```
+
 ### Speed
 
 The original implementation used a custom made trie. This maybe was not the fastest (I wasn't sure). So, I compared against a third party trie implementation, pygtrie. The pygtrie had nicer prefix methods which allowed for much faster processing of large texts. This changed converting all of Strabo or Herodotus in the Perseus catalog from a many minute operation to a ~3-4 second operation. I have seen implementations that use regular expressions which I suspsect might be faster since the underlying implementation is in C. However, this package is much smaller and simpler if betacode conversion is all that is needed than CLTK, for example.
