@@ -6,7 +6,7 @@ from collections.abc import MutableMapping
 import itertools
 import unicodedata
 
-import pygtrie
+import pygtrie  # type: ignore[import-untyped]
 
 from . import _map
 
@@ -19,14 +19,14 @@ _BETA_PUNCTUATION = frozenset("':-_")
 _BETA_APOSTROPHE = "\u2019"
 
 
-def _create_unicode_map():
+def _create_unicode_map() -> dict[str, str]:
     """
     Create the inverse map from unicode to betacode.
 
     Returns:
         The hash map to convert unicode characters to the beta code representation.
     """
-    unicode_map = {}
+    unicode_map: dict[str, str] = {}
 
     for beta, uni in _map.BETACODE_MAP.items():
         # Include decomposed equivalent where necessary.
@@ -91,7 +91,7 @@ def _find_max_beta_token_len() -> int:
 _MAX_BETA_TOKEN_LEN = _find_max_beta_token_len()
 
 
-def _penultimate_sigma_word_final(text: str) -> bool:
+def _penultimate_sigma_word_final(text: list[str]) -> bool:
     return (
         len(text) > 1
         and text[-2] == _MEDIAL_LC_SIGMA
@@ -100,7 +100,7 @@ def _penultimate_sigma_word_final(text: str) -> bool:
     )
 
 
-_BETA_CONVERSION_TRIES: MutableMapping[tuple, pygtrie.CharTrie] = {}
+_BETA_CONVERSION_TRIES: MutableMapping[tuple[bool], pygtrie.CharTrie] = {}
 
 
 def beta_to_uni(text: str, strict: bool = False) -> str:
@@ -123,7 +123,7 @@ def beta_to_uni(text: str, strict: bool = False) -> str:
         t = _create_conversion_trie(*param_key)
         _BETA_CONVERSION_TRIES[param_key] = t
 
-    transform = []
+    transform: list[str] = []
     idx = 0
     possible_word_boundary = False
 
@@ -172,7 +172,7 @@ def uni_to_beta(text: str) -> str:
     """
     u = _UNICODE_MAP
 
-    transform = []
+    transform: list[str] = []
 
     for ch in text:
         try:
