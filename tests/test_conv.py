@@ -40,7 +40,7 @@ import unicodedata
 
 import pytest
 
-import betacode.conv
+import betacode
 from betacode import _map
 
 _MAX_TOKEN_LEN = max(len(key) for key in _map.BETACODE_MAP)
@@ -160,16 +160,16 @@ def test_conv_equivalence(case: Case, order_fuzz_enabled: bool) -> None:
     beta_normalized = unicodedata.normalize("NFC", case.beta)
 
     if not case.skip_to_uni:
-        strict = unicodedata.normalize("NFC", betacode.conv.beta_to_uni(case.beta, strict=True))
+        strict = unicodedata.normalize("NFC", betacode.beta_to_uni(case.beta, strict=True))
         assert strict == uni_normalized
 
         variants = _reorderings(case.beta) if case.fuzz and order_fuzz_enabled else [case.beta]
         for variant in variants:
             non_strict = unicodedata.normalize(
-                "NFC", betacode.conv.beta_to_uni(variant, strict=False)
+                "NFC", betacode.beta_to_uni(variant, strict=False)
             )
             assert non_strict == uni_normalized, f"beta_to_uni({variant!r}, strict=False)"
 
     if not case.skip_to_beta:
-        reverse = unicodedata.normalize("NFC", betacode.conv.uni_to_beta(case.uni))
+        reverse = unicodedata.normalize("NFC", betacode.uni_to_beta(case.uni))
         assert reverse == beta_normalized

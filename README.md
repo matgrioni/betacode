@@ -24,10 +24,10 @@ Note that in all examples, strings are unicode encoded. Input can be in upper or
 #### Betacode to unicode
 
 ```
-import betacode.conv
+import betacode
 
 beta = 'analabo/ntes de\ kaq\' e(/kaston'
-betacode.conv.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
+betacode.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
 ```
 
 Note that polytonic accent marks will be used, and not monotonic accent marks. Both are de jure equivalent in Greece, but betacode was initially developed to encode classic works so the polytonic diacritics are more fitting. In other words, the oxeîa will be used rather than tónos. The oxeîa form can be converted to the modern accent form easily either through search and replace, or unicode normalization since oxeîa has canonical decomposition into tónos.
@@ -42,10 +42,10 @@ If set, only the cannonical order of diacritics is accepted in betacode. If it i
 
 #### Unicode to betacode
 ```
-import betacode.conv
+import betacode
 
 uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
-betacode.conv.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
+betacode.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
 ```
 
 The unicode text can use polytonic (oxeîa) accent marks or monotonic (tónos) accent marks can be used.
