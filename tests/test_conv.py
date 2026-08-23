@@ -75,11 +75,11 @@ def _token_reorderings(token: str) -> list[str]:
     if token not in _map.BETACODE_MAP:
         return [token]
 
-    anchor, diacritics = token[0], token[1:]
-    if diacritics:
+    anchor = token[0]
+    if len(token) > 1:
         assert anchor == "*" or anchor.isalpha(), f"malformed betacode token: {token!r}"
 
-    reorderings = {anchor + "".join(perm) for perm in itertools.permutations(diacritics)}
+    reorderings = {anchor + "".join(perm) for perm in itertools.permutations(token[1:])}
     return sorted(reorderings)
 
 
