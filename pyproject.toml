@@ -1,6 +1,5 @@
 [project]
 name = "betacode"
-version = "1.1"
 authors = [{ name = "Matias Grioni", email = "matgrioni@gmail.com" }]
 description = "Betacode to Unicode Converter"
 readme = "README.md"
