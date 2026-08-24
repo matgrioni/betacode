@@ -152,9 +152,7 @@ CASES = [
 @pytest.mark.parametrize("case", CASES, ids=[case.id for case in CASES])
 def test_conv_equivalence(case: Case, order_fuzz_enabled: bool) -> None:
     """Check the directions of case's beta/uni equivalence that its flags allow."""
-    assert not (
-        case.skip_to_uni and case.skip_to_beta
-    ), "a case cannot skip both directions"
+    assert not (case.skip_to_uni and case.skip_to_beta), "a case cannot skip both directions"
 
     uni_normalized = unicodedata.normalize("NFC", case.uni)
     beta_normalized = unicodedata.normalize("NFC", case.beta)
@@ -165,9 +163,7 @@ def test_conv_equivalence(case: Case, order_fuzz_enabled: bool) -> None:
 
         variants = _reorderings(case.beta) if case.fuzz and order_fuzz_enabled else [case.beta]
         for variant in variants:
-            non_strict = unicodedata.normalize(
-                "NFC", betacode.beta_to_uni(variant, strict=False)
-            )
+            non_strict = unicodedata.normalize("NFC", betacode.beta_to_uni(variant, strict=False))
             assert non_strict == uni_normalized, f"beta_to_uni({variant!r}, strict=False)"
 
     if not case.skip_to_beta:

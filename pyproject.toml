@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.scripts]
-betacode = "betacode.cli:main"
+betacode = "betacode._cli:main"
 
 [dependency-groups]
 dev = [
