@@ -9,18 +9,8 @@ library supports:
     variant of beta (see "Order fuzzing" below)
   - uni_to_beta(uni) == beta
 
-Not every case is symmetric though, so a case can opt out of some of the above:
-  - skip_to_beta: `uni` is reachable from `beta`, but converting `uni` back does
-    not reproduce this exact `beta`. This is usually because multiple
-    betacode spellings collapse to the same unicode character, e.g. bare "s"
-    for a medial sigma vs. the explicit "s1", or "s2" vs. a contextually
-    inferred final sigma. Only the beta_to_uni direction is checked.
-  - skip_to_uni: `beta` cannot be produced by converting `uni` back. This is
-    usually because `uni` contains characters, such as plain ASCII or Latin
-    text, that beta_to_uni would itself try to transliterate. Only
-    uni_to_beta is checked.
-  - fuzz: set to False to check only the canonical ordering of `beta`, and
-    skip generating its diacritic-order variants (see below).
+Not every case is symmetric though, so a case can opt out of checking one
+direction -- see the Case flags documented alongside it in cases.py.
 
 Order fuzzing
 --------------
@@ -34,7 +24,6 @@ This can be disabled for the whole run with `pytest --no-order-fuzz`, which
 falls back to checking only the canonical ordering.
 """
 
-import dataclasses
 import itertools
 import unicodedata
 
@@ -42,6 +31,7 @@ import pytest
 
 import betacode
 from betacode import _map
+from .cases import CONV_CASES, Case
 
 _MAX_TOKEN_LEN = max(len(key) for key in _map.BETACODE_MAP)
 
@@ -89,67 +79,7 @@ def _reorderings(beta: str) -> list[str]:
     return ["".join(combo) for combo in itertools.product(*choices)]
 
 
-@dataclasses.dataclass(frozen=True)
-class Case:
-    """A single beta/uni equivalence to check, with flags for asymmetric cases."""
-
-    id: str
-    beta: str
-    uni: str
-    skip_to_uni: bool = False
-    skip_to_beta: bool = False
-    fuzz: bool = True
-
-
-CASES = [
-    Case("empty", "", ""),
-    Case("simple_conv_no_diacritics", "ab", "αβ"),
-    Case("simple_conv", "tou=", "τοῦ"),
-    Case("final_sigma", "th=s", "τῆς"),
-    Case("numeric_sigma_id", "th=s2", "τῆς", skip_to_beta=True),
-    Case("keep_non_final_sigma_numeric", "th=s3 tou=", "τῆϲ τοῦ"),
-    Case("final_sigma_word", "th=s tou=", "τῆς τοῦ"),
-    Case("final_sigma_whitespace", "th=s\ttou=", "τῆς\tτοῦ"),
-    Case("final_sigma_punctuation", "th=s; tou=", "τῆς; τοῦ"),
-    Case("final_sigma_apostrophe", "th=s' tou=", "τῆσ’ τοῦ", skip_to_beta=True),
-    Case(
-        "multi_word_medial_sigma",
-        "analabo/ntes de\\ kaq' e(/kaston",
-        "αναλαβόντες δὲ καθ’ ἕκαστον",
-        skip_to_beta=True,
-    ),
-    Case(
-        "punctuation_semicolon",
-        "e)/oiken h)\\ dida/skonti; nh\\",
-        "ἔοικεν ἢ διδάσκοντι; νὴ",
-        skip_to_beta=True,
-    ),
-    Case("punctuation_colon", "dh=lon: oi(/ te", "δῆλον· οἵ τε"),
-    Case("many_accents", "*)/eforos kai\\ a)/lloi", "Ἔφορος καὶ ἄλλοι"),
-    Case(
-        "multiple_elisions",
-        "e)n d' e)\\pes' w)keanw=|",
-        "ἐν δ’ ἒπεσ’ ὠκεανῷ",
-        skip_to_beta=True,
-    ),
-    Case("iota_subscript_and_diaeresis_grave", "a)=| i\\+", "ᾆ ῒ"),
-    Case("cap_breathing_grave_iota_subscript", "*)\\h|", "ᾚ"),
-    Case(
-        "colon_ascii_punctuation_passthrough",
-        "plei/ous: e)/ti de\\ oi( meta\\",
-        "πλείους: ἔτι δὲ οἱ μετὰ",
-        skip_to_uni=True,
-    ),
-    Case(
-        "non_greek_passthrough",
-        "Many python packages cannot convert this: e)/ti de\\ oi(",
-        "Many python packages cannot convert this: ἔτι δὲ οἱ",
-        skip_to_uni=True,
-    ),
-]
-
-
-@pytest.mark.parametrize("case", CASES, ids=[case.id for case in CASES])
+@pytest.mark.parametrize("case", CONV_CASES, ids=[case.id for case in CONV_CASES])
 def test_conv_equivalence(case: Case, order_fuzz_enabled: bool) -> None:
     """Check the directions of case's beta/uni equivalence that its flags allow."""
     assert not (case.skip_to_uni and case.skip_to_beta), "a case cannot skip both directions"

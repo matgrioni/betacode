@@ -258,7 +258,7 @@ BETACODE_MAP: Mapping[str, str] = {
     "*)/a|": "\u1f8c",
     "*)/h|": "\u1f9c",
     "*)/w|": "\u1fac",
-    # Rough breating, acute accent, and ypogegrammeni
+    # Rough breathing, acute accent, and ypogegrammeni
     "a(/|": "\u1f85",
     "h(/|": "\u1f95",
     "w(/|": "\u1fa5",

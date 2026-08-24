@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/matgrioni/betacode.svg?branch=master)](https://travis-ci.org/matgrioni/betacode)
+[![CI](https://github.com/matgrioni/betacode/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/matgrioni/betacode/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/matgrioni/betacode/badge.svg?branch=master)](https://coveralls.io/github/matgrioni/betacode?branch=master)
 
 ## betacode

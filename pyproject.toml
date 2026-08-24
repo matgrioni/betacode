@@ -4,13 +4,13 @@ authors = [{ name = "Matias Grioni", email = "matgrioni@gmail.com" }]
 description = "Betacode to Unicode Converter"
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 dynamic = ["version"]
 keywords = ["encoding", "unicode", "betacode", "greek"]
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: MIT License',
     'Natural Language :: Greek',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
