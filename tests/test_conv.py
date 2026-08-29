@@ -1,28 +1,9 @@
 """
-Tests for betacode.conv: beta_to_uni and uni_to_beta.
+Test engine that validates the Case list defined in cases.py.
 
-Each Case names an equivalence between a canonical betacode string and its
-unicode counterpart. By default a case is checked in every direction the
-library supports:
-  - beta_to_uni(beta, strict=True) == uni
-  - beta_to_uni(variant, strict=False) == uni, for every diacritic-order
-    variant of beta (see "Order fuzzing" below)
-  - uni_to_beta(uni) == beta
-
-Not every case is symmetric though, so a case can opt out of checking one
-direction or mode -- see the Case options documented alongside it in
-cases.py.
-
-Order fuzzing
---------------
-`beta` is assumed to already be in canonical order. Every betacode token
-(a run of characters starting with an asterisk or a letter, e.g. "a)/" or
-"*)\\h|") accepts its diacritics -- and, for capitals, its base letter -- in
-any order when parsed non-strictly. Rather than hand-writing a handful of
-scrambled inputs, `_reorderings` derives every valid reordering of `beta`
-directly and each is checked against `uni` under beta_to_uni(strict=False).
-This can be disabled for the whole run with `pytest --no-order-fuzz`, which
-falls back to checking only the canonical ordering.
+For each Case, validates the desired directions of conversion and other
+validation options such as fuzzing. Actual cases are authored in cases.py
+which contains all validation cases.
 """
 
 import itertools
@@ -38,12 +19,18 @@ _MAX_TOKEN_LEN = max(len(key) for key in _map.BETACODE_MAP)
 
 
 def _tokenize(beta: str) -> list[str]:
-    """
-    Split a canonical betacode string into its component tokens.
+    """Split a canonical betacode string into its component tokens.
 
     Each returned piece is either a full entry from BETACODE_MAP (e.g. "a)/",
     "*)\\h|") or a single character that isn't part of any token, such as
     whitespace or punctuation.
+
+    Args:
+        beta: The betacode string to split, assumed to already be in
+            canonical diacritic order.
+
+    Returns:
+        The component tokens/characters, in order.
     """
     tokens = []
     idx = 0
@@ -62,7 +49,15 @@ def _tokenize(beta: str) -> list[str]:
 
 
 def _token_reorderings(token: str) -> list[str]:
-    """All ways to reorder a single betacode token's diacritics."""
+    """All ways to reorder a single betacode token's diacritics.
+
+    Args:
+        token: A single betacode token in canonical order. If it isn't
+            actually a token in BETACODE_MAP, it's returned unchanged.
+
+    Returns:
+        Every valid reordering of token's diacritics, sorted.
+    """
     if token not in _map.BETACODE_MAP:
         return [token]
 
@@ -75,14 +70,29 @@ def _token_reorderings(token: str) -> list[str]:
 
 
 def _reorderings(beta: str) -> list[str]:
-    """All diacritic-order variants of a canonical betacode string."""
+    """All diacritic-order variants of a canonical betacode string.
+
+    Args:
+        beta: The betacode string to generate variants of, assumed to
+            already be in canonical order.
+
+    Returns:
+        Every combination of diacritic-order variants across beta's tokens.
+    """
     choices = [_token_reorderings(token) for token in _tokenize(beta)]
     return ["".join(combo) for combo in itertools.product(*choices)]
 
 
 @pytest.mark.parametrize("case", CONV_CASES, ids=[case.id for case in CONV_CASES])
 def test_conv_equivalence(case: Case, order_fuzz_enabled: bool) -> None:
-    """Check the directions and modes of case's beta/uni equivalence its options allow."""
+    """Check the directions and modes of case's beta/uni equivalence its options allow.
+
+    Args:
+        case: The equivalence to check, and which directions/modes to check
+            it in.
+        order_fuzz_enabled: Whether to fuzz diacritic order for the
+            non-strict beta_to_uni check (see --no-order-fuzz).
+    """
     assert not (case.to_uni.skip and case.to_beta.skip), "a case cannot skip both directions"
 
     uni_normalized = unicodedata.normalize("NFC", case.uni)
