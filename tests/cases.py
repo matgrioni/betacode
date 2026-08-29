@@ -87,4 +87,5 @@ CONV_CASES = [
         "Many python packages cannot convert this: ἔτι δὲ οἱ",
         skip_to_uni=True,
     ),
+    Case("hyphenated_compound", "a)/lloi-de\\", "ἄλλοι‐δὲ"),
 ]
