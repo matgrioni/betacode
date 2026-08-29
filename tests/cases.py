@@ -136,7 +136,7 @@ def NonStrictOnly(case_id: str, beta: str, uni: str) -> Case:
         case_id,
         beta,
         uni,
-        to_uni=ToUniOptions(skip_strict=True, skip_fuzz=True),
+        to_uni=ToUniOptions(skip_strict=True),
         to_beta=ToBetaOptions(skip=True),
     )
 
@@ -149,11 +149,17 @@ CURATED_CASES = [
     Full("simple_conv_no_diacritics", "ab", "αβ"),
     Full("simple_conv", "tou=", "τοῦ"),
     Full("final_sigma", "th=s", "τῆς"),
-    ToUni("numeric_sigma_id", "th=s2", "τῆς"),
     Full("keep_non_final_sigma_numeric", "th=s3 tou=", "τῆϲ τοῦ"),
     Full("final_sigma_word", "th=s tou=", "τῆς τοῦ"),
     Full("final_sigma_whitespace", "th=s\ttou=", "τῆς\tτοῦ"),
     Full("final_sigma_punctuation", "th=s; tou=", "τῆς; τοῦ"),
+    Full("punctuation_colon", "dh=lon: oi(/ te", "δῆλον· οἵ τε"),
+    Full("many_accents", "*)/eforos kai\\ a)/lloi", "Ἔφορος καὶ ἄλλοι"),
+    Full("iota_subscript_and_diaeresis_grave", "a)=| i\\+", "ᾆ ῒ"),
+    Full("cap_breathing_grave_iota_subscript", "*)\\h|", "ᾚ"),
+    Full("hyphenated_compound", "a)/lloi-de\\", "ἄλλοι‐δὲ"),
+
+    ToUni("numeric_sigma_id", "th=s2", "τῆς"),
     ToUni("final_sigma_apostrophe", "th=s' tou=", "τῆσ’ τοῦ"),
     ToUni(
         "multi_word_medial_sigma",
@@ -165,15 +171,13 @@ CURATED_CASES = [
         "e)/oiken h)\\ dida/skonti; nh\\",
         "ἔοικεν ἢ διδάσκοντι; νὴ",
     ),
-    Full("punctuation_colon", "dh=lon: oi(/ te", "δῆλον· οἵ τε"),
-    Full("many_accents", "*)/eforos kai\\ a)/lloi", "Ἔφορος καὶ ἄλλοι"),
     ToUni(
         "multiple_elisions",
         "e)n d' e)\\pes' w)keanw=|",
         "ἐν δ’ ἒπεσ’ ὠκεανῷ",
     ),
-    Full("iota_subscript_and_diaeresis_grave", "a)=| i\\+", "ᾆ ῒ"),
-    Full("cap_breathing_grave_iota_subscript", "*)\\h|", "ᾚ"),
+    ToUni("embedded_unicode_passthrough", "lo/gos αβ", "λόγος αβ"),
+
     ToBeta(
         "colon_ascii_punctuation_passthrough",
         "πλείους: ἔτι δὲ οἱ μετὰ",
@@ -185,7 +189,7 @@ CURATED_CASES = [
         "Many python packages cannot convert this: e)/ti de\\ oi(",
     ),
     ToBeta("non_latin_unicode_passthrough", "Hello, Привет 123!", "Hello, Привет 123!"),
-    Full("hyphenated_compound", "a)/lloi-de\\", "ἄλλοι‐δὲ"),
+
     # Non-strict mode is order-flexible (see test_conv.py's "Order fuzzing"), but
     # strict mode is not: it still greedily matches whatever valid,
     # canonically-ordered prefix it can find (here, the acute accent alone) and
@@ -205,7 +209,6 @@ CURATED_CASES = [
     # present in the input (e.g. from mixed-source text) is inert to it. The
     # reverse doesn't hold: uni_to_beta would rewrite the embedded "αβ" back to
     # ASCII, so the uni_to_beta direction is skipped here.
-    ToUni("embedded_unicode_passthrough", "lo/gos αβ", "λόγος αβ"),
 ]
 
 
