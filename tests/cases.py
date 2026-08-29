@@ -17,7 +17,7 @@ controlled by two small per-direction option structs on Case:
         transliterate.
       - skip_strict / skip_non_strict: skip just one of the two beta_to_uni
         modes, for a case where strict and non-strict parsing of the same
-        `beta` are expected to disagree (see StrictOnly/NonStrictOnly below).
+        `beta` are expected to disagree (see the ToUni wrapper below).
       - skip_fuzz: skip generating diacritic-order variants of `beta` for the
         non-strict check, checking only its canonical ordering.
   - to_beta: ToBetaOptions
@@ -30,16 +30,14 @@ Most cases don't need to construct these structs directly -- the wrapper
 functions below cover the common scenarios and read as what each case is
 actually demonstrating:
   - Full: nothing is skipped; beta and uni fully agree in both directions.
-  - ToUni: only beta_to_uni is checked (strict and non-strict); uni_to_beta
-    would not reproduce this particular `beta` spelling.
+  - ToUni: only beta_to_uni is checked; uni_to_beta would not reproduce this
+    particular `beta` spelling. Both the strict and non-strict checks run by
+    default; pass skip_strict or skip_non_strict for a `beta` spelling where
+    the two modes are expected to disagree (e.g. diacritics deliberately out
+    of order, or ASCII case that only non-strict folds).
   - ToBeta: only uni_to_beta is checked; beta_to_uni would not reproduce this
     particular `uni` text. Takes `uni` before `beta`, since a ToBeta case is
     naturally described starting from the unicode text.
-  - StrictOnly / NonStrictOnly: only one beta_to_uni mode is checked, for a
-    `beta` spelling where strict and non-strict parsing genuinely disagree
-    (e.g. diacritics deliberately out of order, or ASCII case that only
-    non-strict folds). uni_to_beta is always skipped for these, since the
-    `beta` in question is never the canonical spelling of `uni`.
 
 This module is excluded from codespell in `make lint`: the betacode strings
 here are dense in short, accented tokens that regularly collide with
@@ -80,28 +78,35 @@ class Case:
     to_beta: ToBetaOptions = field(default_factory=ToBetaOptions)
 
 
-# These read as named scenario constructors for Case, one per common pattern
-# above -- pylint's snake_case naming check doesn't have an exception for that,
-# so it's disabled for just this block.
 # pylint: disable=invalid-name
 
 
-def Full(case_id: str, beta: str, uni: str, *, skip_fuzz: bool = False) -> Case:
-    """A case checked in every direction and mode: strict, non-strict (fuzzing
-    diacritic order unless skip_fuzz=True), and the reverse uni_to_beta."""
-    return Case(
-        case_id, beta, uni, to_uni=ToUniOptions(skip_fuzz=skip_fuzz), to_beta=ToBetaOptions()
-    )
+def Full(case_id: str, beta: str, uni: str) -> Case:
+    return Case(case_id, beta, uni, to_uni=ToUniOptions(), to_beta=ToBetaOptions())
 
 
-def ToUni(case_id: str, beta: str, uni: str, *, skip_fuzz: bool = False) -> Case:
-    """A case where only beta_to_uni is checked (strict and non-strict); the
-    reverse uni_to_beta(uni) would not reproduce this exact beta spelling."""
+def ToUni(  # pylint: disable=too-many-arguments
+    case_id: str,
+    beta: str,
+    uni: str,
+    *,
+    skip_fuzz: bool = False,
+    skip_strict: bool = False,
+    skip_non_strict: bool = False,
+) -> Case:
+    """A case where only beta_to_uni is checked; the reverse uni_to_beta(uni)
+    would not reproduce this exact beta spelling. By default both the strict
+    and non-strict checks run; pass skip_strict or skip_non_strict for a
+    `beta` spelling where the two modes are expected to disagree (e.g.
+    diacritics deliberately out of order, or ASCII case that only non-strict
+    folds)."""
     return Case(
         case_id,
         beta,
         uni,
-        to_uni=ToUniOptions(skip_fuzz=skip_fuzz),
+        to_uni=ToUniOptions(
+            skip_fuzz=skip_fuzz, skip_strict=skip_strict, skip_non_strict=skip_non_strict
+        ),
         to_beta=ToBetaOptions(skip=True),
     )
 
@@ -111,34 +116,6 @@ def ToBeta(case_id: str, uni: str, beta: str) -> Case:
     reproduce this exact uni text (e.g. it contains characters beta_to_uni
     would itself try to transliterate)."""
     return Case(case_id, beta, uni, to_uni=ToUniOptions(skip=True), to_beta=ToBetaOptions())
-
-
-def StrictOnly(case_id: str, beta: str, uni: str) -> Case:
-    """A case where only strict beta_to_uni is checked. Non-strict parsing of
-    this exact `beta` spelling is expected to produce something else, and
-    uni_to_beta is always skipped since this `beta` is never the canonical
-    spelling of `uni` (see NonStrictOnly for the corresponding non-strict
-    equivalence)."""
-    return Case(
-        case_id,
-        beta,
-        uni,
-        to_uni=ToUniOptions(skip_non_strict=True, skip_fuzz=True),
-        to_beta=ToBetaOptions(skip=True),
-    )
-
-
-def NonStrictOnly(case_id: str, beta: str, uni: str) -> Case:
-    """A case where only non-strict beta_to_uni is checked. Strict parsing of
-    this exact `beta` spelling is expected to produce something else (see
-    StrictOnly for the corresponding strict equivalence)."""
-    return Case(
-        case_id,
-        beta,
-        uni,
-        to_uni=ToUniOptions(skip_strict=True),
-        to_beta=ToBetaOptions(skip=True),
-    )
 
 
 # pylint: enable=invalid-name
@@ -158,7 +135,6 @@ CURATED_CASES = [
     Full("iota_subscript_and_diaeresis_grave", "a)=| i\\+", "ᾆ ῒ"),
     Full("cap_breathing_grave_iota_subscript", "*)\\h|", "ᾚ"),
     Full("hyphenated_compound", "a)/lloi-de\\", "ἄλλοι‐δὲ"),
-
     ToUni("numeric_sigma_id", "th=s2", "τῆς"),
     ToUni("final_sigma_apostrophe", "th=s' tou=", "τῆσ’ τοῦ"),
     ToUni(
@@ -176,8 +152,26 @@ CURATED_CASES = [
         "e)n d' e)\\pes' w)keanw=|",
         "ἐν δ’ ἒπεσ’ ὠκεανῷ",
     ),
+    # beta_to_uni only ever matches ASCII betacode tokens, so unicode already
+    # present in the input (e.g. from mixed-source text) is inert to it. The
+    # reverse doesn't hold: uni_to_beta would rewrite the embedded "αβ" back to
+    # ASCII, so the uni_to_beta direction is skipped here.
     ToUni("embedded_unicode_passthrough", "lo/gos αβ", "λόγος αβ"),
-
+    # Non-strict mode is order-flexible (see test_conv.py's "Order fuzzing"), but
+    # strict mode is not: it still greedily matches whatever valid,
+    # canonically-ordered prefix it can find (here, the acute accent alone) and
+    # leaves the rest as literal, untranslated text, rather than rejecting the
+    # whole token.
+    ToUni("strict_partial_match_on_scrambled_order", "a/)", "ά)", skip_non_strict=True),
+    ToUni("non_strict_full_match_on_scrambled_order", "a/)", "ἄ", skip_strict=True),
+    # Capital Greek letters are always written with a leading "*"; strict mode
+    # treats a bare, un-starred capital ASCII letter as literal text rather than
+    # folding its case. Non-strict mode does fold it, but only as a side effect
+    # of how its trie is built (every diacritic permutation is stored in both
+    # ASCII cases) -- not a deliberate "ignore-case" feature -- so it's worth
+    # pinning down explicitly.
+    ToUni("strict_bare_letter_is_case_sensitive", "A", "A", skip_non_strict=True),
+    ToUni("non_strict_bare_letter_folds_case", "A", "α", skip_strict=True),
     ToBeta(
         "colon_ascii_punctuation_passthrough",
         "πλείους: ἔτι δὲ οἱ μετὰ",
@@ -189,26 +183,6 @@ CURATED_CASES = [
         "Many python packages cannot convert this: e)/ti de\\ oi(",
     ),
     ToBeta("non_latin_unicode_passthrough", "Hello, Привет 123!", "Hello, Привет 123!"),
-
-    # Non-strict mode is order-flexible (see test_conv.py's "Order fuzzing"), but
-    # strict mode is not: it still greedily matches whatever valid,
-    # canonically-ordered prefix it can find (here, the acute accent alone) and
-    # leaves the rest as literal, untranslated text, rather than rejecting the
-    # whole token.
-    StrictOnly("strict_partial_match_on_scrambled_order", "a/)", "ά)"),
-    NonStrictOnly("non_strict_full_match_on_scrambled_order", "a/)", "ἄ"),
-    # Capital Greek letters are always written with a leading "*"; strict mode
-    # treats a bare, un-starred capital ASCII letter as literal text rather than
-    # folding its case. Non-strict mode does fold it, but only as a side effect
-    # of how its trie is built (every diacritic permutation is stored in both
-    # ASCII cases) -- not a deliberate "ignore-case" feature -- so it's worth
-    # pinning down explicitly.
-    StrictOnly("strict_bare_letter_is_case_sensitive", "A", "A"),
-    NonStrictOnly("non_strict_bare_letter_folds_case", "A", "α"),
-    # beta_to_uni only ever matches ASCII betacode tokens, so unicode already
-    # present in the input (e.g. from mixed-source text) is inert to it. The
-    # reverse doesn't hold: uni_to_beta would rewrite the embedded "αβ" back to
-    # ASCII, so the uni_to_beta direction is skipped here.
 ]
 
 
