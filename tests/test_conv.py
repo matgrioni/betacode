@@ -10,7 +10,8 @@ library supports:
   - uni_to_beta(uni) == beta
 
 Not every case is symmetric though, so a case can opt out of checking one
-direction -- see the Case flags documented alongside it in cases.py.
+direction or mode -- see the Case options documented alongside it in
+cases.py.
 
 Order fuzzing
 --------------
@@ -81,21 +82,26 @@ def _reorderings(beta: str) -> list[str]:
 
 @pytest.mark.parametrize("case", CONV_CASES, ids=[case.id for case in CONV_CASES])
 def test_conv_equivalence(case: Case, order_fuzz_enabled: bool) -> None:
-    """Check the directions of case's beta/uni equivalence that its flags allow."""
-    assert not (case.skip_to_uni and case.skip_to_beta), "a case cannot skip both directions"
+    """Check the directions and modes of case's beta/uni equivalence its options allow."""
+    assert not (case.to_uni.skip and case.to_beta.skip), "a case cannot skip both directions"
 
     uni_normalized = unicodedata.normalize("NFC", case.uni)
     beta_normalized = unicodedata.normalize("NFC", case.beta)
 
-    if not case.skip_to_uni:
-        strict = unicodedata.normalize("NFC", betacode.beta_to_uni(case.beta, strict=True))
-        assert strict == uni_normalized
+    if not case.to_uni.skip:
+        if not case.to_uni.skip_strict:
+            strict = unicodedata.normalize("NFC", betacode.beta_to_uni(case.beta, strict=True))
+            assert strict == uni_normalized
 
-        variants = _reorderings(case.beta) if case.fuzz and order_fuzz_enabled else [case.beta]
-        for variant in variants:
-            non_strict = unicodedata.normalize("NFC", betacode.beta_to_uni(variant, strict=False))
-            assert non_strict == uni_normalized, f"beta_to_uni({variant!r}, strict=False)"
+        if not case.to_uni.skip_non_strict:
+            fuzz = not case.to_uni.skip_fuzz and order_fuzz_enabled
+            variants = _reorderings(case.beta) if fuzz else [case.beta]
+            for variant in variants:
+                non_strict = unicodedata.normalize(
+                    "NFC", betacode.beta_to_uni(variant, strict=False)
+                )
+                assert non_strict == uni_normalized, f"beta_to_uni({variant!r}, strict=False)"
 
-    if not case.skip_to_beta:
+    if not case.to_beta.skip:
         reverse = unicodedata.normalize("NFC", betacode.uni_to_beta(case.uni))
         assert reverse == beta_normalized
