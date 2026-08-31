@@ -1,56 +1,56 @@
 [![CI](https://github.com/matgrioni/betacode/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/matgrioni/betacode/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/github/matgrioni/betacode/badge.svg?branch=master)](https://coveralls.io/github/matgrioni/betacode?branch=master)
 
 ## betacode
 
-Convert betacode to unicode and vice-versa easily. The definition used is based off what is found at the [TLG Beta Code Manual](http://www.tlg.uci.edu/encoding/BCM.pdf). Only the Greek sections were paid attention to.
+Convert betacode to unicode and vice-versa. The mapping is based on the Greek sections of the [TLG Beta Code Manual](http://www.tlg.uci.edu/encoding/BCM.pdf); only Greek is handled (see [Status and limitations](#status-and-limitations)).
 
 ## Motivation
 
-I was working a classics research project and had to use the Perseus catalog to extract some Greek work. Much to my surprise however, the only download I could find was a betacode version. An encoding that is over 30 years old, rather than modern, fancy, clean unicode. There was no nice pip package that I could easily go to for this simple task, so I decided to roll my own.
+I was working on a classics research project and had to use the Perseus catalog to extract some Greek text. Much to my surprise, the only download available was a betacode version — an encoding over 30 years old, rather than modern unicode. There was no pip package I could reach for, so I wrote my own.
 
-### Install
+At the time I had very little background in classics, and not much more experience programming, so this reflects a lot of early learning rather than careful design. Read [Status and limitations](#status-and-limitations) before relying on it for anything serious.
 
-Installation is easy. Use `pip` or your preferred method to download from PyPI.
+## Install
 
 ```
 pip install betacode
 ```
 
-### Usage
+## Usage
 
-Note that in all examples, strings are unicode encoded. Input can be in upper or lower case. The official definition from TLG uses only uppercase, but many resources, such as the Perseus catalog, are encoded in lowercase, so this package accepts both. This package also can disregard the unnecessary cannonical order of Greek diacritics from the official definition. The only thing that matters in order for the betacode to be unambiguous is that each unit must either begin with a `*` or a letter. As long as these constraints are followed, breathing marks, accents, and such can go in any order. However, the cannonical order will be returned when going from unicode to betacode. Also note that currently, only individual, non-combining characters are handled. This means that you cannot do all combinations of letters and diacritics. Only those defined as composite characters in the Greek and Extended Greek sections of unicode.
+Input can be upper or lower case. The official TLG definition uses only uppercase, but many resources, such as the Perseus catalog, are lowercase, so both are accepted. Diacritic order does not need to follow the canonical order from the TLG manual unless `strict` is set (see below); output always uses the canonical order.
 
-#### Betacode to unicode
+### Betacode to unicode
 
-```
+```python
 import betacode
 
 beta = 'analabo/ntes de\ kaq\' e(/kaston'
-betacode.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
+betacode.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
 ```
 
-Note that polytonic accent marks will be used, and not monotonic accent marks. Both are de jure equivalent in Greece, but betacode was initially developed to encode classic works so the polytonic diacritics are more fitting. In other words, the oxeîa will be used rather than tónos. The oxeîa form can be converted to the modern accent form easily either through search and replace, or unicode normalization since oxeîa has canonical decomposition into tónos.
+Polytonic accent marks (oxeîa) are used rather than monotonic ones (tónos). Both are de jure equivalent in Greek, but betacode was designed to encode classical works, so the polytonic diacritics are the better fit. The oxeîa form can be converted to the monotonic form with a search and replace, or via unicode normalization, since oxeîa has a canonical decomposition to tónos.
 
-Conversion can also be made more strict by using the `strict` flag.
+Conversion can be made stricter with the `strict` flag:
 
+```python
+betacode.beta_to_uni(text, strict=True)
 ```
-beta_to_uni(text, strict=False)
-```
 
-If set, only the cannonical order of diacritics is accepted in betacode. If it is not set, then any order is allowed as long as capital letters begin with a `*` and lowercase letters begin with the letter and not a diacritic.
+When set, only the canonical order of diacritics defined by the TLG manual is accepted. Otherwise, diacritics may appear in any order, as long as capital letters begin with `*` and lowercase letters begin with the letter itself rather than a diacritic.
 
-#### Unicode to betacode
-```
+### Unicode to betacode
+
+```python
 import betacode
 
 uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
 betacode.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
 ```
 
-The unicode text can use polytonic (oxeîa) accent marks or monotonic (tónos) accent marks can be used.
+Input text may use either polytonic (oxeîa) or monotonic (tónos) accent marks.
 
-### Command line usage
+## Command line usage
 
 Installing the package also installs a `betacode` command with two subcommands, `to-unicode` and `to-beta`. Each accepts one of `-t`/`--text` for raw text on the command line, `-f`/`--file` for a file to convert, or `-i`/`--interactive` for a continuous, REPL-like session.
 
@@ -90,15 +90,12 @@ Entering continuous mode. Press Ctrl-D (or Ctrl-Z on Windows) to exit.
 >>
 ```
 
-### Speed
+## Status and limitations
 
-The original implementation used a custom made trie. This maybe was not the fastest (I wasn't sure). So, I compared against a third party trie implementation, pygtrie. The pygtrie had nicer prefix methods which allowed for much faster processing of large texts. This changed converting all of Strabo or Herodotus in the Perseus catalog from a many minute operation to a ~3-4 second operation. I have seen implementations that use regular expressions which I suspsect might be faster since the underlying implementation is in C. However, this package is much smaller and simpler if betacode conversion is all that is needed than CLTK, for example.
+This library only ever covers the Greek portions of betacode. Betacode as a format encodes several ancient languages, and individual works sometimes mix more than one language in the same source; none of that is handled here, only Greek.
 
-### Modified Betacode
+Betacode-to-unicode conversion has been attempted by a number of projects with various complications. Perseus Digital Library [describes some of the transformation work and complications](https://github.com/PerseusDL/tei-conversion-tools/wiki/Greek-Betacode-to-Unicode-Transformations). The format itself isn't especially hard to build a converter for so implementations [aren't rare](https://xkcd.com/927/) but I think there's real value in a canonical, easily auditable, open-source converter that people can inspect, trust, modern and can easily integrate into a variety of contexts. However, I'm not part of the classics tooling community, so I can't say whether that gap is already filled or actually wanted and useful during this transitionary work for the different projects.
 
-There is talk of a modified betacode that I have seen around on the internet. I have never been able to find a definitive definition of this so I have not implemented it. Among some differences is word final sigma usage, `_` as macron, and uppercase and lowercase roman letters instead of using `*`.
+Additionally, the TLG Beta Code Manual itself defines codes for metadata and formatting complicate the format meaningfully, even if it stays (close to?) context-free and different projects use non-standard encodings. None of that extra layer is implemented here and I suspect means that a work from the different classics library cannot be easily taken off the shelf and passed through this library without several caveats or other data pipeline handling.
 
-
-## Development
-
-I am no classicist, and this was done in my free time. It is very possible that there are some letters missing that are not accounted for, or some punctuation that is not properly handled. If that is the case, please tell me as it is easy to fix, or please open a PR for your own branch. Write tests if you do add a feature.
+**In short, I would not recommend this library for serious conversion work.** For quick lookups or one-off conversions, the [CLI](#command-line-usage) or interactive mode could still be useful. If you have an actual use case you think this library could help with, where there's currently a gap, I'd genuinely like to hear about it. A specific problem to solve would resolve most of the ambiguity in deciding what's worth improving next.
