@@ -1,54 +1,60 @@
+"""
+Defines the main entry point methods to convert between betacode and unicode.
+"""
+
+from collections.abc import MutableMapping
 import itertools
 import unicodedata
 
-import pygtrie
+import pygtrie  # type: ignore[import-untyped]
 
 from . import _map
 
 # Special characters that need their own references to rewrite with
-_FINAL_LC_SIGMA = '\u03c2'
-_MEDIAL_LC_SIGMA = '\u03c3'
+_FINAL_LC_SIGMA = "\u03c2"
+_MEDIAL_LC_SIGMA = "\u03c3"
 
 # Punctuation marks in the betacode map
-_BETA_PUNCTUATION = frozenset('\':-_')
-_BETA_APOSTROPHE = '\u2019'
+_BETA_PUNCTUATION = frozenset("':-_")
+_BETA_APOSTROPHE = "\u2019"
 
 
-def _create_unicode_map():
+def _create_unicode_map() -> dict[str, str]:
     """
     Create the inverse map from unicode to betacode.
 
     Returns:
-    The hash map to convert unicode characters to the beta code representation.
+        The hash map to convert unicode characters to the beta code representation.
     """
-    unicode_map = {}
+    unicode_map: dict[str, str] = {}
 
     for beta, uni in _map.BETACODE_MAP.items():
         # Include decomposed equivalent where necessary.
-        norm = unicodedata.normalize('NFC', uni)
+        norm = unicodedata.normalize("NFC", uni)
         unicode_map[norm] = beta
         unicode_map[uni] = beta
 
     # Add the final sigmas.
-    final_sigma_norm = unicodedata.normalize('NFC', _FINAL_LC_SIGMA)
-    unicode_map[final_sigma_norm] = 's'
-    unicode_map[_FINAL_LC_SIGMA] = 's'
+    final_sigma_norm = unicodedata.normalize("NFC", _FINAL_LC_SIGMA)
+    unicode_map[final_sigma_norm] = "s"
+    unicode_map[_FINAL_LC_SIGMA] = "s"
 
     return unicode_map
+
 
 _UNICODE_MAP = _create_unicode_map()
 
 
-def _create_conversion_trie(strict):
+def _create_conversion_trie(strict: bool) -> pygtrie.CharTrie:
     """
     Create the trie for betacode conversion.
 
     Args:
-    text: The beta code text to convert. All of this text must be betacode.
-    strict: Flag to allow for flexible diacritic order on input.
+        text: The beta code text to convert. All of this text must be betacode.
+        strict: Flag to allow for flexible diacritic order on input.
 
     Returns:
-    The trie for conversion.
+        The trie for conversion.
     """
     t = pygtrie.CharTrie()
 
@@ -64,57 +70,60 @@ def _create_conversion_trie(strict):
 
             perms = itertools.permutations(diacritics)
             for perm in perms:
-                perm_str = beta[0] + ''.join(perm)
+                perm_str = beta[0] + "".join(perm)
                 t[perm_str.lower()] = uni
                 t[perm_str.upper()] = uni
 
     return t
 
 
-def _find_max_beta_token_len():
+def _find_max_beta_token_len() -> int:
     """
     Finds the maximum length of a single betacode token.
 
     Returns:
-    The length of the longest key in the betacode map, which corresponds to the
-    longest single betacode token.
+        The length of the longest key in the betacode map, which corresponds to the
+        longest single betacode token.
     """
-    max_beta_len = -1
-    for beta, uni in _map.BETACODE_MAP.items():
-        if len(beta) > max_beta_len:
-            max_beta_len = len(beta)
+    return max(map(len, _map.BETACODE_MAP), default=-1)
 
-    return max_beta_len
 
 _MAX_BETA_TOKEN_LEN = _find_max_beta_token_len()
 
-def _penultimate_sigma_word_final(text):
-    return len(text) > 1 and text[-2] == _MEDIAL_LC_SIGMA and \
-        not text[-1].isalnum() and text[-1] != _BETA_APOSTROPHE
+
+def _penultimate_sigma_word_final(text: list[str]) -> bool:
+    return (
+        len(text) > 1
+        and text[-2] == _MEDIAL_LC_SIGMA
+        and not text[-1].isalnum()
+        and text[-1] != _BETA_APOSTROPHE
+    )
 
 
-_BETA_CONVERSION_TRIES = {}
-def beta_to_uni(text, strict=False):
+_BETA_CONVERSION_TRIES: MutableMapping[tuple[bool], pygtrie.CharTrie] = {}
+
+
+def beta_to_uni(text: str, strict: bool = False) -> str:
     """
     Converts the given text from betacode to unicode.
 
     Args:
-    text: The beta code text to convert. All of this text must be betacode.
-    strict: Flag to allow for flexible diacritic order on input.
+        text: The beta code text to convert. All of this text must be betacode.
+        strict: Flag to allow for flexible diacritic order on input.
 
     Returns:
-    The converted text.
+        The converted text.
     """
     # Check if the requested configuration for conversion already has a trie
     # stored otherwise convert it.
     param_key = (strict,)
     try:
-       t = _BETA_CONVERSION_TRIES[param_key]
+        t = _BETA_CONVERSION_TRIES[param_key]
     except KeyError:
         t = _create_conversion_trie(*param_key)
         _BETA_CONVERSION_TRIES[param_key] = t
 
-    transform = []
+    transform: list[str] = []
     idx = 0
     possible_word_boundary = False
 
@@ -122,7 +131,7 @@ def beta_to_uni(text, strict=False):
         if possible_word_boundary and _penultimate_sigma_word_final(transform):
             transform[-2] = _FINAL_LC_SIGMA
 
-        step = t.longest_prefix(text[idx:idx + _MAX_BETA_TOKEN_LEN])
+        step = t.longest_prefix(text[idx : idx + _MAX_BETA_TOKEN_LEN])
 
         if step:
             possible_word_boundary = text[idx] in _BETA_PUNCTUATION
@@ -143,26 +152,27 @@ def beta_to_uni(text, strict=False):
     elif len(transform) > 0 and transform[-1] == _MEDIAL_LC_SIGMA:
         transform[-1] = _FINAL_LC_SIGMA
 
-    converted = ''.join(transform)
+    converted = "".join(transform)
     return converted
 
-def uni_to_beta(text):
+
+def uni_to_beta(text: str) -> str:
     """
     Convert unicode text to a betacode equivalent.
 
     This method can handle tónos or oxeîa characters in the input.
 
     Args:
-    text: The text to convert to betacode. This text does not have to all be
-        Greek polytonic text, and only Greek characters will be converted. Note
-        that in this case, you cannot convert to beta and then back to unicode.
+        text: The text to convert to betacode. This text does not have to all be
+            Greek polytonic text, and only Greek characters will be converted. Note
+            that in this case, you cannot convert to beta and then back to unicode.
 
     Returns:
-    The betacode equivalent of the inputted text where applicable.
+        The betacode equivalent of the inputted text where applicable.
     """
     u = _UNICODE_MAP
 
-    transform = []
+    transform: list[str] = []
 
     for ch in text:
         try:
@@ -172,5 +182,5 @@ def uni_to_beta(text):
 
         transform.append(conv)
 
-    converted = ''.join(transform)
+    converted = "".join(transform)
     return converted

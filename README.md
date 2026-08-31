@@ -1,9 +1,9 @@
-[![Build Status](https://travis-ci.org/matgrioni/betacode.svg?branch=master)](https://travis-ci.org/matgrioni/betacode)
+[![CI](https://github.com/matgrioni/betacode/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/matgrioni/betacode/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/matgrioni/betacode/badge.svg?branch=master)](https://coveralls.io/github/matgrioni/betacode?branch=master)
 
 ## betacode
 
-Convert betacode to unicode and vice-versa easily. Tested on python 3.4, 3.5, and 3.6. The definition used is based off what is found at the [TLG Beta Code Manual](http://www.tlg.uci.edu/encoding/BCM.pdf). Only the Greek sections were paid attention to.
+Convert betacode to unicode and vice-versa easily. The definition used is based off what is found at the [TLG Beta Code Manual](http://www.tlg.uci.edu/encoding/BCM.pdf). Only the Greek sections were paid attention to.
 
 ## Motivation
 
@@ -24,10 +24,10 @@ Note that in all examples, strings are unicode encoded. Input can be in upper or
 #### Betacode to unicode
 
 ```
-import betacode.conv
+import betacode
 
 beta = 'analabo/ntes de\ kaq\' e(/kaston'
-betacode.conv.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
+betacode.beta_to_uni(beta) # αναλαβόντες δὲ καθ᾽ ἕκαστον
 ```
 
 Note that polytonic accent marks will be used, and not monotonic accent marks. Both are de jure equivalent in Greece, but betacode was initially developed to encode classic works so the polytonic diacritics are more fitting. In other words, the oxeîa will be used rather than tónos. The oxeîa form can be converted to the modern accent form easily either through search and replace, or unicode normalization since oxeîa has canonical decomposition into tónos.
@@ -42,13 +42,53 @@ If set, only the cannonical order of diacritics is accepted in betacode. If it i
 
 #### Unicode to betacode
 ```
-import betacode.conv
+import betacode
 
 uni = 'αναλαβόντες δὲ καθ᾽ ἕκαστον'
-betacode.conv.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
+betacode.uni_to_beta(uni) # analabo/ntes de\ kaq\' e(/kaston
 ```
 
 The unicode text can use polytonic (oxeîa) accent marks or monotonic (tónos) accent marks can be used.
+
+### Command line usage
+
+Installing the package also installs a `betacode` command with two subcommands, `to-unicode` and `to-beta`. Each accepts one of `-t`/`--text` for raw text on the command line, `-f`/`--file` for a file to convert, or `-i`/`--interactive` for a continuous, REPL-like session.
+
+Convert raw text given directly on the command line:
+
+```
+betacode to-unicode --text "lo/gos"
+# λόγος
+```
+
+```
+betacode to-beta --text "λόγος"
+# lo/gos
+```
+
+Add `--strict` to `to-unicode` to only accept the canonical diacritic order:
+
+```
+betacode to-unicode --strict --text "lo/gos"
+```
+
+Convert the contents of a file, writing the result to stdout:
+
+```
+betacode to-unicode --file input.txt > output.txt
+```
+
+Start a continuous session, where each line entered is converted and printed until you exit with `Ctrl-D`:
+
+```
+$ betacode to-unicode --interactive
+Entering continuous mode. Press Ctrl-D (or Ctrl-Z on Windows) to exit.
+>> lo/gos
+λόγος
+>> kalo/s
+καλός
+>>
+```
 
 ### Speed
 

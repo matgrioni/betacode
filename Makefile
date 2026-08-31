@@ -1,31 +1,15 @@
-build:
-	python setup.py build
+.PHONY: format lint
 
-sdist:
-	python setup.py sdist
+format:
+	python -m black betacode/ tests/
 
-publish:
-	python setup.py sdist
-	twine upload dist/*
-
-publishtest:
-	python setup.py sdist
-	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-
-test:
-	pytest
-
-docs:
-	pandoc --from=markdown --to=rst --output=README.rst README.md
-	pandoc --from=markdown --to=plain --output=README README.md
-	# Remove the first 3 lines of the README file which are badge related.
-	sed -i 1,3d README
-
-clean:
-	if [ -d 'dist' ]; then \
-		rm -r dist; \
-	fi
-
-	if [ -d 'build' ]; then \
-		rm -r build; \
+lint:
+	@failed=""; \
+	run() { "$$@" || failed="$$failed\n  $$*"; }; \
+	run python -m pylint betacode/ tests/; \
+	run python -m black --check --quiet betacode/ tests/; \
+	run codespell betacode/ tests/ --skip=tests/cases.py; \
+	if [ -n "$$failed" ]; then \
+		printf "\nFailed commands:%b\n" "$$failed"; \
+		exit 1; \
 	fi

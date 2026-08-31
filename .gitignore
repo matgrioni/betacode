@@ -1,9 +1,9 @@
+betacode.egg-info/
 __pycache__/
 .pytest_cache/
-dist/
-build/
-venv/
+.mypy_cache/
+.venv/
 
 MANIFEST
-.*.swp
 *.pyc
+.*.swp

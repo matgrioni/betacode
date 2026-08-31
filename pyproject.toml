@@ -1,0 +1,53 @@
+[project]
+name = "betacode"
+authors = [{ name = "Matias Grioni", email = "matgrioni@gmail.com" }]
+description = "Betacode to Unicode Converter"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dynamic = ["version"]
+keywords = ["encoding", "unicode", "betacode", "greek"]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Science/Research',
+    'Natural Language :: Greek',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Topic :: Text Processing :: Linguistic'
+]
+dependencies = [
+    "pygtrie>=2.5.0",
+]
+
+[project.scripts]
+betacode = "betacode._cli:main"
+
+[dependency-groups]
+dev = [
+    "black>=26.5.1",
+    "codespell>=2.4.3",
+    "mypy>=2.3.1",
+    "pylint>=4.0.7",
+    "pytest>=9.1.1",
+]
+
+[project.urls]
+homepage = "https://github.com/matgrioni/betacode"
+source = "https://github.com/matgrioni/betacode"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+preview = true
+
+[tool.setuptools.dynamic]
+version = { file = "betacode/_version" }
+
+[tool.setuptools.package-data]
+pyconll = ["py.typed", "_version"]
